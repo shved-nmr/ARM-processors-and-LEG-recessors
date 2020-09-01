@@ -18,7 +18,7 @@ M5::M5(const char* line) {
 
 
 const char* M5::getType() const {
-	return "M1";
+	return "M5";
 }
 
 
@@ -32,13 +32,13 @@ unsigned int M5::getYLength() const {
 }
 
 
-uint8_t M5::getXDirection() const {
-	return this->xDirection;
+Direction M5::getXDirection() const {
+	return (Direction) this->xDirection;
 }
 
 
-uint8_t M5::getYDirection() const {
-	return this->yDirection;
+Direction M5::getYDirection() const {
+	return (Direction) this->yDirection;
 }
 
 

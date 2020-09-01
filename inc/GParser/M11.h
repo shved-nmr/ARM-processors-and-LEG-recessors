@@ -20,9 +20,6 @@ public:
 	~M11();
 
 	const char* getType() const override;
-
-protected:
-
 };
 
 

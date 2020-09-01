@@ -31,12 +31,11 @@ static void prvSetupHardware(void)
 	SystemCoreClockUpdate();
 	Board_Init();
 
-	/* Initial LED0 state is off */
 	Board_LED_Set(0, false);
 }
 
-/* LED1 toggle thread */
-static void vLEDTask1(void *pvParameters) {
+
+static void vTask1(void *pvParameters) {
 	bool LedState = false;
 	GLine m10 {"M10\n"};
 	GLine m11 {"M11\n"};
@@ -51,7 +50,6 @@ static void vLEDTask1(void *pvParameters) {
 		Board_LED_Set(0, LedState);
 		LedState = (bool) !LedState;
 
-		/* About a 3Hz on/off toggle rate */
 		vTaskDelay(configTICK_RATE_HZ / 6);
 	}
 }
@@ -75,7 +73,7 @@ int main(void)
 	heap_monitor_setup();
 	prvSetupHardware();
 
-	xTaskCreate(vLEDTask1, "vTaskLed1",
+	xTaskCreate(vTask1, "Task 1",
 				configMINIMAL_STACK_SIZE + 512, NULL, (tskIDLE_PRIORITY + 1UL),
 				(TaskHandle_t *) NULL);
 

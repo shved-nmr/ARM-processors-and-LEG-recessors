@@ -27,7 +27,6 @@ public:
 protected:
 	uint8_t penUp;
 	uint8_t penDown;
-
 };
 
 

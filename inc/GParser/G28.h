@@ -21,9 +21,6 @@ public:
 	~G28() = default;
 
 	const char* getType() const override;
-
-protected:
-
 };
 
 

@@ -5,8 +5,8 @@
  *      Author: MStefan99
  */
 
-#ifndef GPARSER_M5_H_
-#define GPARSER_M5_H_
+#ifndef M5_H_
+#define M5_H_
 
 
 #include <cstdio>
@@ -24,8 +24,8 @@ public:
 
 	unsigned int getXLength() const;
 	unsigned int getYLength() const;
-	uint8_t getXDirection() const;
-	uint8_t getYDirection() const;
+	Direction getXDirection() const;
+	Direction getYDirection() const;
 	uint8_t getPlottingSpeed() const;
 
 protected:
@@ -37,4 +37,4 @@ protected:
 };
 
 
-#endif /* GPARSER_M5_H_ */
+#endif /* M5_H_ */
