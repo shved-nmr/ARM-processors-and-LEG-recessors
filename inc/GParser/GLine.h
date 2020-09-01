@@ -11,13 +11,14 @@
 #include <cstring>
 
 #include "GCode.h"
+#include "M2.h"
 #include "M10.h"
 #include "M11.h"
 
 
 class GLine {
 public:
-	GLine (char* line);
+	GLine (const char* line);
 	~GLine();
 
 protected:

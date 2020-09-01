@@ -38,8 +38,9 @@ static void prvSetupHardware(void)
 /* LED1 toggle thread */
 static void vLEDTask1(void *pvParameters) {
 	bool LedState = false;
-	GLine m10 {"M10\r\n"};
-	GLine m11 {"M11\r\n"};
+	GLine m10 {"M10\n"};
+	GLine m11 {"M11\n"};
+	GLine m2 {"M2 U150 D80\n"};
 
 	while (1) {
 		Board_LED_Set(0, LedState);

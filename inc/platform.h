@@ -8,6 +8,8 @@
 #ifndef PLATFORM_H_
 #define PLATFORM_H_
 
+#include <cstdint>
+
 
 typedef struct {
 	bool limitXLow;
@@ -20,14 +22,14 @@ typedef struct {
 #define DIRECTION_CLOCKWISE 0
 #define DIRECTION_COUNTERCLOCKWISE 1
 
-#define X_LENGTH 310
-#define Y_LENGTH 380
-#define X_DIRECTION DIRECTION_CLOCKWISE
-#define Y_DIRECTION DIRECTION_CLOCKWISE
+extern unsigned int X_LENGTH;
+extern unsigned int Y_LENGTH;
+extern uint8_t X_DIRECTION;
+extern uint8_t Y_DIRECTION;
 
-#define PLOTTING_SPEED 80
-#define PEN_UP 160
-#define PEN_DOWN 90
+extern uint8_t PLOTTING_SPEED;
+extern uint8_t PEN_UP;
+extern uint8_t PEN_DOWN;
 
 
 LimitSwitches_t getLimitSwitches();
