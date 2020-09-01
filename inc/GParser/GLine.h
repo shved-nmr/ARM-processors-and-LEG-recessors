@@ -12,6 +12,8 @@
 
 #include "GCode.h"
 #include "M10.h"
+#include "M11.h"
+
 
 class GLine {
 public:

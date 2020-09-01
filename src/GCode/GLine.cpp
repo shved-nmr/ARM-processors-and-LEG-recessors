@@ -11,6 +11,8 @@
 GLine::GLine(char* line) {
 	if (strstr(line, "M10")) {
 		this->code = new M10();
+	} else if (strstr(line, "M11")) {
+		this->code = new M11();
 	}
 }
 

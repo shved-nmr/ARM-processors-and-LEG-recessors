@@ -1,12 +1,12 @@
 /*
- * M10.h
+ * M11.h
  *
  *  Created on: 1 Sep 2020
  *      Author: MStefan99
  */
 
-#ifndef GPARSER_M10_H_
-#define GPARSER_M10_H_
+#ifndef GPARSER_M11_H_
+#define GPARSER_M11_H_
 
 #include <cstdio>
 
@@ -14,10 +14,10 @@
 #include "GCode.h"
 
 
-class M10 : public GCode {
+class M11 : public GCode {
 public:
-	M10();
-	~M10();
+	M11();
+	~M11();
 	const char* getType() const override;
 	const char* getReply() const override;
 
