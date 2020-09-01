@@ -9,7 +9,9 @@
 
 
 GLine::GLine(const char* line) {
-	if (strstr(line, "G28")) {
+	if (strstr(line, "G1")) {
+		this->code = new G1(line);
+	} else if (strstr(line, "G28")) {
 		this->code = new G28();
 	} else if (strstr(line, "M1")) {
 		this->code = new M1(line);
@@ -30,6 +32,7 @@ GLine::GLine(const char* line) {
 const GCode* GLine::getCode() const {
 	return this->code;
 }
+
 
 GLine::~GLine() {
 	delete (this->code);

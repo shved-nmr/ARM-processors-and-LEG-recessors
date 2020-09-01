@@ -45,6 +45,7 @@ static void vLEDTask1(void *pvParameters) {
 	GLine m5 {"M5 A0 B0 H310 W380 S80\n"};
 	GLine m4 {"M4 70\n"};
 	GLine g28 {"G28\n"};
+	GLine g1 {"G1 X85.14 Y117.29 A0\n"};
 
 	while (1) {
 		Board_LED_Set(0, LedState);
