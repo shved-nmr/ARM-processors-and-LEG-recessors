@@ -1,12 +1,12 @@
 /*
- * M11.h
+ * M1.h
  *
  *  Created on: 1 Sep 2020
  *      Author: MStefan99
  */
 
-#ifndef M11_H_
-#define M11_H_
+#ifndef M1_H_
+#define M1_H_
 
 #include <cstdio>
 
@@ -14,10 +14,10 @@
 #include "GCode.h"
 
 
-class M11 : public GCode {
+class M1 : public GCode {
 public:
-	M11();
-	~M11();
+	M1(const char* line);
+	~M1() = default;
 	const char* getType() const override;
 	const char* getReply() const override;
 
@@ -26,4 +26,4 @@ protected:
 };
 
 
-#endif /* M11_H_ */
+#endif /* M1_H_ */

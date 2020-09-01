@@ -30,6 +30,7 @@ extern uint8_t Y_DIRECTION;
 extern uint8_t PLOTTING_SPEED;
 extern uint8_t PEN_UP;
 extern uint8_t PEN_DOWN;
+extern uint8_t PEN_POSITION;
 
 
 LimitSwitches_t getLimitSwitches();

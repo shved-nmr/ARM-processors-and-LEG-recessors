@@ -15,6 +15,8 @@ GLine::GLine(const char* line) {
 		this->code = new M11();
 	} else if (strstr(line, "M2")) {
 		this->code = new M2(line);
+	} else if (strstr(line, "M1")) {
+		this->code = new M1(line);
 	}
 }
 

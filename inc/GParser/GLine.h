@@ -11,6 +11,7 @@
 #include <cstring>
 
 #include "GCode.h"
+#include "M1.h"
 #include "M2.h"
 #include "M10.h"
 #include "M11.h"

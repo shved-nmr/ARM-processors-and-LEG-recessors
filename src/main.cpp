@@ -41,6 +41,7 @@ static void vLEDTask1(void *pvParameters) {
 	GLine m10 {"M10\n"};
 	GLine m11 {"M11\n"};
 	GLine m2 {"M2 U150 D80\n"};
+	GLine m1 {"M1 90\n"};
 
 	while (1) {
 		Board_LED_Set(0, LedState);

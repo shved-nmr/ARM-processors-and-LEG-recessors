@@ -5,8 +5,8 @@
  *      Author: MStefan99
  */
 
-#ifndef GPARSER_M10_H_
-#define GPARSER_M10_H_
+#ifndef M10_H_
+#define M10_H_
 
 #include <cstdio>
 
@@ -26,4 +26,4 @@ protected:
 };
 
 
-#endif /* GPARSER_M10_H_ */
+#endif /* M10_H_ */
