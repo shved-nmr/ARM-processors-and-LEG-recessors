@@ -18,6 +18,7 @@ class M11 : public GCode {
 public:
 	M11();
 	~M11();
+
 	const char* getType() const override;
 	const char* getReply() const override;
 

@@ -9,7 +9,7 @@
 
 
 M1::M1(const char* line) {
-	sscanf(line, "M1 %hhu ", &PEN_POSITION);
+	sscanf(line, "M1 %hhu ", &penPosition);
 	this->reply = (char*)"OK\r\n";
 }
 
@@ -21,4 +21,9 @@ const char* M1::getType() const {
 
 const char* M1::getReply() const {
 	return this->reply;
+}
+
+
+uint8_t M1::getPenPosition() const {
+	return this->penPosition;
 }

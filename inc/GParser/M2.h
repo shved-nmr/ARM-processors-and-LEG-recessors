@@ -21,7 +21,12 @@ public:
 	const char* getType() const override;
 	const char* getReply() const override;
 
+	uint8_t getPenUp() const;
+	uint8_t getPenDown() const;
+
 protected:
+	uint8_t penUp;
+	uint8_t penDown;
 
 };
 

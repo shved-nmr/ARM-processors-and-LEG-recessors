@@ -11,6 +11,12 @@
 #include <cstdint>
 
 
+enum Direction {
+	clockwise = 0,
+	counterClockwise = 1
+};
+
+
 typedef struct {
 	bool limitXLow;
 	bool limitXHigh;
@@ -19,13 +25,10 @@ typedef struct {
 } LimitSwitches_t;
 
 
-#define DIRECTION_CLOCKWISE 0
-#define DIRECTION_COUNTERCLOCKWISE 1
-
 extern unsigned int X_LENGTH;
 extern unsigned int Y_LENGTH;
-extern uint8_t X_DIRECTION;
-extern uint8_t Y_DIRECTION;
+extern Direction X_DIRECTION;
+extern Direction Y_DIRECTION;
 
 extern uint8_t PLOTTING_SPEED;
 extern uint8_t PEN_UP;

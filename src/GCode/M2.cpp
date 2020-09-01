@@ -9,7 +9,7 @@
 
 
 M2::M2(const char* line) {
-	sscanf(line, "M2 U%hhu D%hhu ", &PEN_UP, &PEN_DOWN);
+	sscanf(line, "M2 U%hhu D%hhu ", &penUp, &penDown);
 	this->reply = (char*)"OK\r\n";
 }
 
@@ -22,3 +22,14 @@ const char* M2::getType() const {
 const char* M2::getReply() const {
 	return this->reply;
 }
+
+
+uint8_t M2::getPenUp() const {
+	return this->penUp;
+}
+
+
+uint8_t M2::getPenDown() const {
+	return this->penDown;
+}
+

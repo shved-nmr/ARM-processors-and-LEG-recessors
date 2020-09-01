@@ -21,8 +21,10 @@ public:
 	const char* getType() const override;
 	const char* getReply() const override;
 
-protected:
+	uint8_t getPenPosition() const;
 
+protected:
+	uint8_t penPosition;
 };
 
 
