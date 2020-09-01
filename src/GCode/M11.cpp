@@ -22,11 +22,6 @@ const char* M11::getType() const {
 }
 
 
-const char* M11::getReply() const {
-	return this->reply;
-}
-
-
 M11::~M11() {
 	delete[] (this->reply);
 }

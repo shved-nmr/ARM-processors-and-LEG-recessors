@@ -19,11 +19,6 @@ const char* M4::getType() const {
 }
 
 
-const char* M4::getReply() const {
-	return this->reply;
-}
-
-
 uint8_t M4::getPower() const {
 	return this->power;
 }

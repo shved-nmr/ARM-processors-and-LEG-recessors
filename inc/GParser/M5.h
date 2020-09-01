@@ -19,8 +19,8 @@ class M5 : public GCode {
 public:
 	M5(const char* line);
 	~M5() = default;
+
 	const char* getType() const override;
-	const char* getReply() const override;
 
 	unsigned int getXLength() const;
 	unsigned int getYLength() const;

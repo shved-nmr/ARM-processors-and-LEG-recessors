@@ -15,12 +15,12 @@
 class GCode {
 public:
 	virtual ~GCode() = default;
+
 	virtual const char* getType() const = 0;
-	virtual const char* getReply() const = 0;
+	const char* getReply() const;
 
 protected:
 	char* reply;
-
 };
 
 

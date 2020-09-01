@@ -22,11 +22,6 @@ const char* M5::getType() const {
 }
 
 
-const char* M5::getReply() const {
-	return this->reply;
-}
-
-
 unsigned int M5::getXLength() const {
 	return this->xLength;
 }

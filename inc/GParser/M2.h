@@ -18,8 +18,8 @@ class M2 : public GCode {
 public:
 	M2(const char* line);
 	~M2() = default;
+
 	const char* getType() const override;
-	const char* getReply() const override;
 
 	uint8_t getPenUp() const;
 	uint8_t getPenDown() const;

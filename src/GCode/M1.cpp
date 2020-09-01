@@ -19,11 +19,6 @@ const char* M1::getType() const {
 }
 
 
-const char* M1::getReply() const {
-	return this->reply;
-}
-
-
 uint8_t M1::getPenPosition() const {
 	return this->penPosition;
 }

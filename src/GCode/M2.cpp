@@ -19,11 +19,6 @@ const char* M2::getType() const {
 }
 
 
-const char* M2::getReply() const {
-	return this->reply;
-}
-
-
 uint8_t M2::getPenUp() const {
 	return this->penUp;
 }

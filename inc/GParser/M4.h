@@ -19,8 +19,8 @@ class M4 : public GCode {
 public:
 	M4(const char* line);
 	~M4() = default;
+
 	const char* getType() const override;
-	const char* getReply() const override;
 
 	uint8_t getPower() const;
 

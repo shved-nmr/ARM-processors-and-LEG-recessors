@@ -18,8 +18,8 @@ class M10 : public GCode {
 public:
 	M10();
 	~M10();
+
 	const char* getType() const override;
-	const char* getReply() const override;
 
 protected:
 

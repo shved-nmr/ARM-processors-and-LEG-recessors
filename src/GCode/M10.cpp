@@ -21,10 +21,6 @@ const char* M10::getType() const {
 }
 
 
-const char* M10::getReply() const {
-	return this->reply;
-}
-
 M10::~M10() {
 	delete[] (this->reply);
 }

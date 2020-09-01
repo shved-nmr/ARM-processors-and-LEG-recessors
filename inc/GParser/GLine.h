@@ -11,6 +11,7 @@
 #include <cstring>
 
 #include "GCode.h"
+#include "G28.h"
 #include "M1.h"
 #include "M2.h"
 #include "M4.h"
@@ -23,6 +24,8 @@ class GLine {
 public:
 	GLine (const char* line);
 	~GLine();
+
+	const GCode* getCode() const;
 
 protected:
 	GCode* code;

@@ -44,7 +44,7 @@ static void vLEDTask1(void *pvParameters) {
 	GLine m1 {"M1 90\n"};
 	GLine m5 {"M5 A0 B0 H310 W380 S80\n"};
 	GLine m4 {"M4 70\n"};
-
+	GLine g28 {"G28\n"};
 
 	while (1) {
 		Board_LED_Set(0, LedState);
@@ -75,7 +75,7 @@ int main(void)
 	prvSetupHardware();
 
 	xTaskCreate(vLEDTask1, "vTaskLed1",
-				configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
+				configMINIMAL_STACK_SIZE + 512, NULL, (tskIDLE_PRIORITY + 1UL),
 				(TaskHandle_t *) NULL);
 
 	vTaskStartScheduler();
