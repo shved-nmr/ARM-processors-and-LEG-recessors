@@ -13,6 +13,10 @@ GLine::GLine(const char* line) {
 		this->code = new G1(line);
 	} else if (strstr(line, "G28")) {
 		this->code = new G28();
+	} else if (strstr(line, "M10")) {
+		this->code = new M10();
+	} else if (strstr(line, "M11")) {
+		this->code = new M11();
 	} else if (strstr(line, "M1")) {
 		this->code = new M1(line);
 	} else if (strstr(line, "M2")) {
@@ -21,10 +25,6 @@ GLine::GLine(const char* line) {
 		this->code = new M4(line);
 	} else if (strstr(line, "M5")) {
 		this->code = new M5(line);
-	} else if (strstr(line, "M10")) {
-		this->code = new M10();
-	} else if (strstr(line, "M11")) {
-		this->code = new M11();
 	}
 }
 
