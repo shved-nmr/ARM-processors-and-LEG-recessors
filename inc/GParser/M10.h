@@ -9,6 +9,7 @@
 #define M10_H_
 
 #include <cstdio>
+#include <cstring>
 
 #include "platform.h"
 #include "GCode.h"
@@ -18,6 +19,8 @@ class M10 : public GCode {
 public:
 	M10();
 	~M10();
+
+	M10* clone() const override;
 
 	const char* getType() const override;
 };

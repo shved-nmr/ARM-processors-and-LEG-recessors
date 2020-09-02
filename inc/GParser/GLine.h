@@ -23,7 +23,9 @@
 
 class GLine {
 public:
-	GLine (const char* line);
+	GLine(const char* line);
+	GLine(GCode* code);
+	GLine(const GLine& line);
 	~GLine();
 
 	const GCode* getCode() const;

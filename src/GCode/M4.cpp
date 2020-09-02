@@ -14,6 +14,12 @@ M4::M4(const char* line) {
 }
 
 
+M4* M4::clone() const {
+	auto code = new M4(*this);
+	return code;
+}
+
+
 const char* M4::getType() const {
 	return "M4";
 }

@@ -15,6 +15,12 @@ G1::G1(const char* line) {
 }
 
 
+G1* G1::clone() const {
+	auto code = new G1(*this);
+	return code;
+}
+
+
 const char* G1::getType() const {
 	return "G1";
 }

@@ -25,7 +25,21 @@ GLine::GLine(const char* line) {
 		this->code = new M4(line);
 	} else if (strstr(line, "M5")) {
 		this->code = new M5(line);
+	} else {
+		printf("Unknown command \"%s\"\n", line);
+		printf("Parsing aborted\r\n");
+		while (true);
 	}
+}
+
+
+GLine::GLine(GCode* code) {
+	this->code = code;
+}
+
+
+GLine::GLine(const GLine& line) {
+	this->code = line.code->clone();
 }
 
 

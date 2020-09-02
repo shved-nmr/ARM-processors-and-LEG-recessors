@@ -17,6 +17,12 @@ M5::M5(const char* line) {
 }
 
 
+M5* M5::clone() const {
+	auto code = new M5(*this);
+	return code;
+}
+
+
 const char* M5::getType() const {
 	return "M5";
 }

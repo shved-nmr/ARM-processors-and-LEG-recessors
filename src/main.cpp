@@ -26,6 +26,17 @@
 #include "GParser/GLine.h"
 
 
+void onCommand(GLine line) {
+	// Do everything needed
+	// This function should block until the command is complete
+
+	ITM_write(line.getCode()->getType());
+	ITM_write(": ");
+	ITM_write(line.getCode()->getReply());
+//	vTaskDelay(100);  // Example delay
+}
+
+
 /* Sets up system hardware */
 static void prvSetupHardware(void)
 {
@@ -41,19 +52,26 @@ static void prvSetupHardware(void)
 
 static void vTask1(void *pvParameters) {
 	char inputString[80] {};
-	Board_LED_Set(1, true);
-
 	int i {0};
 	int c;
+	Board_LED_Set(1, true);
 
 	while (1) {
 		while ((c = Board_UARTGetChar()) != -1) {
 			inputString[i] = c;
 			++i;
+
 			if (c == '\r' || c == '\n') {
-				GLine gcode {inputString};
-				printf("%s", gcode.getCode()->getReply());
+				GLine line {inputString};
+				onCommand(line);
+				printf("%s", line.getCode()->getReply());
 				i = 0;
+
+				/* Clearing input string to avoid issues
+				 * while reading next command */
+				for (int j {0}; inputString[j]; ++j) {
+					inputString[j] = 0;
+				}
 			}
 		}
 	}

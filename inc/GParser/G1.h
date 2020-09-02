@@ -10,6 +10,7 @@
 
 
 #include <cstdio>
+#include <cstring>
 
 #include "platform.h"
 #include "GCode.h"
@@ -19,6 +20,8 @@ class G1 : public GCode {
 public:
 	G1(const char* line);
 	~G1() = default;
+
+	G1* clone() const override;
 
 	const char* getType() const override;
 

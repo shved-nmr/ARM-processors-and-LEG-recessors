@@ -14,6 +14,12 @@ M1::M1(const char* line) {
 }
 
 
+M1* M1::clone() const {
+	auto code = new M1(*this);
+	return code;
+}
+
+
 const char* M1::getType() const {
 	return "M1";
 }

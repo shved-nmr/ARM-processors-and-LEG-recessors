@@ -13,6 +13,12 @@ G28::G28() {
 }
 
 
+G28* G28::clone() const {
+	auto code = new G28(*this);
+	return code;
+}
+
+
 const char* G28::getType() const {
 	return "G28";
 }

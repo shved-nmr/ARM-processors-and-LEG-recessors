@@ -23,3 +23,4 @@ uint8_t PEN_POSITION {PEN_UP};
 LimitSwitches_t getLimitSwitches() {
 	return LimitSwitches_t {true, true, true, true};
 }
+
