@@ -32,25 +32,28 @@ static void prvSetupHardware(void)
 	Board_Init();
 
 	Board_LED_Set(0, false);
+	Board_LED_Set(1, false);
+	Board_LED_Set(2, false);
 }
 
 
 static void vTask1(void *pvParameters) {
-	bool LedState = false;
-	GLine m10 {"M10\n"};
-	GLine m11 {"M11\n"};
-	GLine m2 {"M2 U150 D80\n"};
-	GLine m1 {"M1 90\n"};
-	GLine m5 {"M5 A0 B0 H310 W380 S80\n"};
-	GLine m4 {"M4 70\n"};
-	GLine g28 {"G28\n"};
-	GLine g1 {"G1 X85.14 Y117.29 A0\n"};
+	char inputString[80] {};
+	Board_LED_Set(1, true);
+
+	int i {0};
+	int c;
 
 	while (1) {
-		Board_LED_Set(0, LedState);
-		LedState = (bool) !LedState;
-
-		vTaskDelay(configTICK_RATE_HZ / 6);
+		while ((c = Board_UARTGetChar()) != -1) {
+			inputString[i] = c;
+			++i;
+			if (c == '\r') {
+				GLine gcode {inputString};
+				printf("%s", gcode.getCode()->getReply());
+				i = 0;
+			}
+		}
 	}
 }
 
