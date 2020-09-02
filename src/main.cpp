@@ -21,6 +21,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "heap_lock_monitor.h"
+#include "ITM_write.h"
 
 #include "GParser/GLine.h"
 
@@ -30,6 +31,7 @@ static void prvSetupHardware(void)
 {
 	SystemCoreClockUpdate();
 	Board_Init();
+	ITM_init();
 
 	Board_LED_Set(0, false);
 	Board_LED_Set(1, false);
@@ -48,7 +50,7 @@ static void vTask1(void *pvParameters) {
 		while ((c = Board_UARTGetChar()) != -1) {
 			inputString[i] = c;
 			++i;
-			if (c == '\r') {
+			if (c == '\r' || c == '\n') {
 				GLine gcode {inputString};
 				printf("%s", gcode.getCode()->getReply());
 				i = 0;
