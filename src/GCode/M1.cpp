@@ -20,6 +20,13 @@ M1* M1::clone() const {
 }
 
 
+void M1::execute() const {
+#ifndef DRY_RUN
+	setPenPosition(this->penPosition);
+#endif
+}
+
+
 const char* M1::getType() const {
 	return "M1";
 }

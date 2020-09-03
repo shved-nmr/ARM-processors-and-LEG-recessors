@@ -22,6 +22,7 @@ public:
 	~G28() = default;
 
 	G28* clone() const override;
+	void execute() const override;
 
 	const char* getType() const override;
 };

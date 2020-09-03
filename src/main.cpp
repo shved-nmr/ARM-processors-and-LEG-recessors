@@ -24,16 +24,16 @@
 #include "ITM_write.h"
 
 #include "GParser/GLine.h"
+#include "platform.h"
 
 
-void onCommand(GLine line) {
-	// Do everything needed
-	// This function should block until the command is complete
-
-	ITM_write(line.getCode()->getType());
-	ITM_write(": ");
-	ITM_write(line.getCode()->getReply());
-//	vTaskDelay(100);  // Example delay
+void startup() {
+	for (int i {0}; i < 3; ++i) {
+		Board_LED_Set(1, true);
+		vTaskDelay(250);
+		Board_LED_Set(1, false);
+		vTaskDelay(250);
+	}
 }
 
 
@@ -44,6 +44,7 @@ static void prvSetupHardware(void)
 	Board_Init();
 	ITM_init();
 
+	setLaserPower(0);
 	Board_LED_Set(0, false);
 	Board_LED_Set(1, false);
 	Board_LED_Set(2, false);
@@ -54,26 +55,39 @@ static void vTask1(void *pvParameters) {
 	char inputString[80] {};
 	int i {0};
 	int c;
-	Board_LED_Set(1, true);
+
+	printf("Plotter started\r\n");
+#ifdef DRY_RUN
+	printf("Dry run mode enabled\r\n");
+#else
+	printf("Warning: Dry run mode disabled!\r\n");
+#endif
+	startup();
 
 	while (1) {
 		while ((c = Board_UARTGetChar()) != -1) {
+			Board_LED_Set(1, true);
 			inputString[i] = c;
 			++i;
 
 			if (c == '\r' || c == '\n') {
 				GLine line {inputString};
-				onCommand(line);
+
+				line.getCode()->execute();  // This should be a blocking call
+				ITM_write(line.getCode()->getType());
+				ITM_write(": ");
+				ITM_write(line.getCode()->getReply());
 				printf("%s", line.getCode()->getReply());
-				i = 0;
 
 				/* Clearing input string to avoid issues
 				 * while reading next command */
 				for (int j {0}; inputString[j]; ++j) {
 					inputString[j] = 0;
 				}
+				i = 0;
 			}
 		}
+		Board_LED_Set(1, false);
 	}
 }
 

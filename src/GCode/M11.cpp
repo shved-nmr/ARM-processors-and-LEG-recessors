@@ -25,6 +25,13 @@ M11* M11::clone() const {
 }
 
 
+void M11::execute() const {
+#ifndef DRY_RUN
+	// Nothing to do
+#endif
+}
+
+
 const char* M11::getType() const {
 	return "M11";
 }

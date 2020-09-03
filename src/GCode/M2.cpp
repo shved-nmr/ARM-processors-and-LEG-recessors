@@ -20,6 +20,16 @@ M2* M2::clone() const {
 }
 
 
+void M2::execute() const {
+	setPenUp(this->penUp);
+	setPenDown(this->penDown);
+
+#ifndef DRY_RUN
+	// Nothing to do
+#endif
+}
+
+
 const char* M2::getType() const {
 	return "M2";
 }

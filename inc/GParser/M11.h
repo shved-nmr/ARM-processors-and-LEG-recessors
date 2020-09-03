@@ -21,6 +21,7 @@ public:
 	~M11();
 
 	M11* clone() const override;
+	void execute() const override;
 
 	const char* getType() const override;
 };

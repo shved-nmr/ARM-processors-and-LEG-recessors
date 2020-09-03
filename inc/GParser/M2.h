@@ -21,6 +21,7 @@ public:
 	~M2() = default;
 
 	M2* clone() const override;
+	void execute() const override;
 
 	const char* getType() const override;
 

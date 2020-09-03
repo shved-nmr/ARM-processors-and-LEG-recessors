@@ -28,6 +28,9 @@ GLine::GLine(const char* line) {
 	} else {
 		printf("Unknown command \"%s\"\n", line);
 		printf("Parsing aborted\r\n");
+		Board_LED_Set(1, false);
+		Board_LED_Set(2, false);
+		Board_LED_Set(0, true);
 		while (true);
 	}
 }

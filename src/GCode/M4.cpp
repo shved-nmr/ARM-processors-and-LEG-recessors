@@ -20,6 +20,13 @@ M4* M4::clone() const {
 }
 
 
+void M4::execute() const {
+#ifndef DRY_RUN
+	setLaserPower(this->power);
+#endif
+}
+
+
 const char* M4::getType() const {
 	return "M4";
 }

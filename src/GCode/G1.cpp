@@ -21,6 +21,13 @@ G1* G1::clone() const {
 }
 
 
+void G1::execute() const {
+#ifndef DRY_RUN
+	// Move the extruder
+#endif
+}
+
+
 const char* G1::getType() const {
 	return "G1";
 }
@@ -37,6 +44,6 @@ float G1::getYCoord() const {
 
 
 bool G1::isRelative() const {
-	return this->relative;
+	return (bool)this->relative;
 }
 

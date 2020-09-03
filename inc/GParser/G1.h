@@ -22,6 +22,7 @@ public:
 	~G1() = default;
 
 	G1* clone() const override;
+	void execute() const override;
 
 	const char* getType() const override;
 
@@ -32,7 +33,7 @@ public:
 protected:
 	float xCoord;
 	float yCoord;
-	bool relative;
+	uint8_t relative;
 };
 
 
