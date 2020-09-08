@@ -14,6 +14,19 @@ M1::M1(const char* line) {
 }
 
 
+M1* M1::clone() const {
+	auto code = new M1(*this);
+	return code;
+}
+
+
+void M1::execute() const {
+#ifndef DRY_RUN
+	setPenPosition(this->penPosition);
+#endif
+}
+
+
 const char* M1::getType() const {
 	return "M1";
 }

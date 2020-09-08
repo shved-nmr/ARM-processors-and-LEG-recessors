@@ -9,6 +9,7 @@
 #define M2_H_
 
 #include <cstdio>
+#include <cstring>
 
 #include "platform.h"
 #include "GCode.h"
@@ -18,6 +19,9 @@ class M2 : public GCode {
 public:
 	M2(const char* line);
 	~M2() = default;
+
+	M2* clone() const override;
+	void execute() const override;
 
 	const char* getType() const override;
 

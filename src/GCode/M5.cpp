@@ -17,6 +17,25 @@ M5::M5(const char* line) {
 }
 
 
+M5* M5::clone() const {
+	auto code = new M5(*this);
+	return code;
+}
+
+
+void M5::execute() const {
+	setXLength(this->xLength);
+	setYLength(this->yLength);
+	setXDirection((Direction)this->xDirection);
+	setYDirection((Direction)this->yDirection);
+	setPlottingSpeed(this->plottingSpeed);
+
+#ifndef DRY_RUN
+	// Nothing to do
+#endif
+}
+
+
 const char* M5::getType() const {
 	return "M5";
 }

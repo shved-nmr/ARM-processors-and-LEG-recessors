@@ -10,6 +10,7 @@
 
 
 #include <cstdio>
+#include <cstring>
 
 #include "platform.h"
 #include "GCode.h"
@@ -20,6 +21,9 @@ public:
 	G1(const char* line);
 	~G1() = default;
 
+	G1* clone() const override;
+	void execute() const override;
+
 	const char* getType() const override;
 
 	float getXCoord() const;
@@ -29,7 +33,7 @@ public:
 protected:
 	float xCoord;
 	float yCoord;
-	bool relative;
+	uint8_t relative;
 };
 
 

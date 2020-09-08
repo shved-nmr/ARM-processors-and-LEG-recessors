@@ -21,8 +21,20 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "heap_lock_monitor.h"
+#include "ITM_write.h"
 
 #include "GParser/GLine.h"
+#include "platform.h"
+
+
+void startup() {
+	for (int i {0}; i < 3; ++i) {
+		Board_LED_Set(1, true);
+		vTaskDelay(250);
+		Board_LED_Set(1, false);
+		vTaskDelay(250);
+	}
+}
 
 
 /* Sets up system hardware */
@@ -30,27 +42,52 @@ static void prvSetupHardware(void)
 {
 	SystemCoreClockUpdate();
 	Board_Init();
+	ITM_init();
 
+	setLaserPower(0);
 	Board_LED_Set(0, false);
+	Board_LED_Set(1, false);
+	Board_LED_Set(2, false);
 }
 
 
 static void vTask1(void *pvParameters) {
-	bool LedState = false;
-	GLine m10 {"M10\n"};
-	GLine m11 {"M11\n"};
-	GLine m2 {"M2 U150 D80\n"};
-	GLine m1 {"M1 90\n"};
-	GLine m5 {"M5 A0 B0 H310 W380 S80\n"};
-	GLine m4 {"M4 70\n"};
-	GLine g28 {"G28\n"};
-	GLine g1 {"G1 X85.14 Y117.29 A0\n"};
+	char inputString[80] {};
+	int i {0};
+	int c;
+
+	printf("Plotter started\r\n");
+#ifdef DRY_RUN
+	printf("Dry run mode enabled\r\n");
+#else
+	printf("Warning: Dry run mode disabled!\r\n");
+#endif
+	startup();
 
 	while (1) {
-		Board_LED_Set(0, LedState);
-		LedState = (bool) !LedState;
+		while ((c = Board_UARTGetChar()) != -1) {
+			Board_LED_Set(1, true);
+			inputString[i] = c;
+			++i;
 
-		vTaskDelay(configTICK_RATE_HZ / 6);
+			if (c == '\r' || c == '\n') {
+				GLine line {inputString};
+
+				line.getCode()->execute();  // This should be a blocking call
+				ITM_write(line.getCode()->getType());
+				ITM_write(": ");
+				ITM_write(line.getCode()->getReply());
+				printf("%s", line.getCode()->getReply());
+
+				/* Clearing input string to avoid issues
+				 * while reading next command */
+				for (int j {0}; inputString[j]; ++j) {
+					inputString[j] = 0;
+				}
+				i = 0;
+			}
+		}
+		Board_LED_Set(1, false);
 	}
 }
 

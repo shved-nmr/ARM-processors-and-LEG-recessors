@@ -8,7 +8,11 @@
 #ifndef PLATFORM_H_
 #define PLATFORM_H_
 
+#define DRY_RUN  // Remove to enable plotting
+
+
 #include <cstdint>
+#include "board.h"
 
 
 enum Direction {
@@ -25,18 +29,27 @@ typedef struct {
 } LimitSwitches_t;
 
 
-extern unsigned int X_LENGTH;
-extern unsigned int Y_LENGTH;
-extern Direction X_DIRECTION;
-extern Direction Y_DIRECTION;
-
-extern uint8_t PLOTTING_SPEED;
-extern uint8_t PEN_UP;
-extern uint8_t PEN_DOWN;
-extern uint8_t PEN_POSITION;
-
-
+// Getters
 LimitSwitches_t getLimitSwitches();
+unsigned int getXLength();
+unsigned int getYLength();
+Direction getXDirection();
+Direction getYDirection();
+uint8_t getPlottingSpeed();
+uint8_t getPenUp();
+uint8_t getPenDown();
+uint8_t getPenPosition();
+
+// Setters
+void setXLength(unsigned int len);
+void setYLength(unsigned int len);
+void setXDirection(Direction dir);
+void setYDirection(Direction dir);
+void setPlottingSpeed(uint8_t spd);
+void setPenUp(uint8_t val);
+void setPenDown(uint8_t val);
+void setPenPosition(uint8_t val);
+void setLaserPower(uint8_t power);
 
 
 #endif /* PLATFORM_H_ */

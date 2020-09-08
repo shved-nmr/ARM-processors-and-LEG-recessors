@@ -13,6 +13,19 @@ G28::G28() {
 }
 
 
+G28* G28::clone() const {
+	auto code = new G28(*this);
+	return code;
+}
+
+
+void G28::execute() const {
+#ifndef DRY_RUN
+	// Move the extruder
+#endif
+}
+
+
 const char* G28::getType() const {
 	return "G28";
 }

@@ -14,6 +14,19 @@ M4::M4(const char* line) {
 }
 
 
+M4* M4::clone() const {
+	auto code = new M4(*this);
+	return code;
+}
+
+
+void M4::execute() const {
+#ifndef DRY_RUN
+	setLaserPower(this->power);
+#endif
+}
+
+
 const char* M4::getType() const {
 	return "M4";
 }
