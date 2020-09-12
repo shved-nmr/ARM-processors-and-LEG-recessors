@@ -11,7 +11,7 @@
 
 #define VERBOSE 0
 #define INFO 1
-#define WARNING 2
+#define WARN 2
 #define ERROR 3
 
 
@@ -19,27 +19,47 @@
 
 
 #ifdef DEBUG
-	#define debug(level, line) {\
-		if (level >= LOG_LEVEL) {\
-			ITM_write(line);\
-		}\
-	}
-
-	#define log(level, line) {\
-		if (level >= LOG_LEVEL) {\
-			ITM_write(line);\
-			printf(line);\
-		}\
-	}
+#define debug(line) {\
+	ITM_write(line);\
+}
 #else
-	#define debug(level, line)
-
-	#define log(level, line) {\
-		if (level >= LOG_LEVEL) {\
-			printf(line);\
-		}\
-	}
+#define debug(line)
 #endif
 
+
+#if LOG_LEVEL <= VERBOSE
+#define log(line) {\
+	printf(line);\
+	ITM_write(line);\
+}
+#else
+#define log(line)
+#endif
+
+
+#if LOG_LEVEL <= INFO
+#define info(line) {\
+	ITM_write(line);\
+	printf(line);\
+}
+#else
+#define info(line)
+#endif
+
+
+#if LOG_LEVEL <= WARN
+#define warn(line) {\
+		ITM_write(line);\
+		printf(line);\
+}
+#else
+#define warn(line)
+#endif
+
+
+#define error(line) {\
+	ITM_write(line);\
+	printf(line);\
+}
 
 #endif /* LOG_H_ */
