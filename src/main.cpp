@@ -25,21 +25,23 @@
 
 #include "GParser/GLine.h"
 #include "platform.h"
+#include "log.h"
 
 
 void startup() {
+	log(VERBOSE, "Startup sequence started\r\n");
 	for (int i {0}; i < 3; ++i) {
 		Board_LED_Set(1, true);
 		vTaskDelay(250);
 		Board_LED_Set(1, false);
 		vTaskDelay(250);
 	}
+	log(VERBOSE, "Startup sequence finished\r\n");
 }
 
 
 /* Sets up system hardware */
-static void prvSetupHardware(void)
-{
+static void prvSetupHardware(void) {
 	SystemCoreClockUpdate();
 	Board_Init();
 	ITM_init();
@@ -48,6 +50,7 @@ static void prvSetupHardware(void)
 	Board_LED_Set(0, false);
 	Board_LED_Set(1, false);
 	Board_LED_Set(2, false);
+	log(VERBOSE, "Hardware setup done\r\n");
 }
 
 
@@ -56,13 +59,13 @@ static void vTask1(void *pvParameters) {
 	int i {0};
 	int c;
 
-	printf("Plotter started\r\n");
-#ifdef DRY_RUN
-	printf("Dry run mode enabled\r\n");
-#else
-	printf("Warning: Dry run mode disabled!\r\n");
-#endif
 	startup();
+	log(INFO, "Plotter started\r\n");
+#ifdef DRY_RUN
+	log(INFO, "Dry run mode enabled\r\n");
+#else
+	printf(WARNING, "Warning: Dry run mode disabled!\r\n");
+#endif
 
 	while (1) {
 		while ((c = Board_UARTGetChar()) != -1) {
@@ -71,13 +74,15 @@ static void vTask1(void *pvParameters) {
 			++i;
 
 			if (c == '\r' || c == '\n') {
+				log(VERBOSE, "Command received\r\n");
 				GLine line {inputString};
 
 				line.getCode()->execute();  // This should be a blocking call
-				ITM_write(line.getCode()->getType());
-				ITM_write(": ");
-				ITM_write(line.getCode()->getReply());
+				debug(VERBOSE, line.getCode()->getType());
+				debug(VERBOSE, ": ");
+				debug(VERBOSE, line.getCode()->getReply());
 				printf("%s", line.getCode()->getReply());
+				log(VERBOSE, "Command executed\r\n");
 
 				/* Clearing input string to avoid issues
 				 * while reading next command */
@@ -105,10 +110,10 @@ void vConfigureTimerForRunTimeStats( void ) {
 /* end runtime statistics collection */
 
 
-int main(void)
-{
+int main(void) {
 	heap_monitor_setup();
 	prvSetupHardware();
+	log(VERBOSE, "Starting kernel\r\n");
 
 	xTaskCreate(vTask1, "Task 1",
 				configMINIMAL_STACK_SIZE + 512, NULL, (tskIDLE_PRIORITY + 1UL),

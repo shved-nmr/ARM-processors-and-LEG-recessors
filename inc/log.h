@@ -20,13 +20,13 @@
 
 #ifdef DEBUG
 	#define debug(level, line) {\
-		if (level > LOG_LEVEL) {\
+		if (level >= LOG_LEVEL) {\
 			ITM_write(line);\
 		}\
 	}
 
 	#define log(level, line) {\
-		if (level > LOG_LEVEL) {\
+		if (level >= LOG_LEVEL) {\
 			ITM_write(line);\
 			printf(line);\
 		}\
@@ -35,7 +35,7 @@
 	#define debug(level, line)
 
 	#define log(level, line) {\
-		if (level > LOG_LEVEL) {\
+		if (level >= LOG_LEVEL) {\
 			printf(line);\
 		}\
 	}
