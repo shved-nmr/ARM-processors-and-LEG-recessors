@@ -30,8 +30,8 @@ void M2::execute() const {
 }
 
 
-const char* M2::getType() const {
-	return "M2";
+const GCode::CodeType M2::getType() const {
+	return GCode::CodeType::M2;
 }
 
 

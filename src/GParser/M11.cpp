@@ -32,8 +32,8 @@ void M11::execute() const {
 }
 
 
-const char* M11::getType() const {
-	return "M11";
+const GCode::CodeType M11::getType() const {
+	return GCode::CodeType::M11;
 }
 
 

@@ -23,7 +23,7 @@ public:
 	M1* clone() const override;
 	void execute() const override;
 
-	const char* getType() const override;
+	const GCode::CodeType getType() const override;
 
 	uint8_t getPenPosition() const;
 

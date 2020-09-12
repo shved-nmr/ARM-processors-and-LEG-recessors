@@ -24,7 +24,7 @@ public:
 	M5* clone() const override;
 	void execute() const override;
 
-	const char* getType() const override;
+	const GCode::CodeType getType() const override;
 
 	unsigned int getXLength() const;
 	unsigned int getYLength() const;
