@@ -27,7 +27,7 @@
 LpcUart* dbgu;
 
 
-GLine readCommand();
+char* readCommand();
 
 
 void startup() {
@@ -45,9 +45,9 @@ static void prvSetupHardware(void) {
 	SystemCoreClockUpdate();
 	Board_Init();
 	ITM_init();
-	LpcPinMap none = {-1, -1}; // unused pin has negative values in it
-	LpcPinMap txpin = { 0, 18 }; // transmit pin that goes to debugger's UART->USB converter
-	LpcPinMap rxpin = { 0, 13 }; // receive pin that goes to debugger's UART->USB converter
+	LpcPinMap none = {-1, -1};
+	LpcPinMap txpin = { 0, 18 };
+	LpcPinMap rxpin = { 0, 13 };
 	LpcUartConfig cfg = {
 			LPC_USART0,
 			115200,
@@ -68,8 +68,8 @@ static void prvSetupHardware(void) {
 }
 
 
-GLine readCommand() {
-	char inputString[80] {};
+char* readCommand() {
+	auto inputString = new char[80] {};
 	int i {0};
 	char c;
 	auto startTime = xTaskGetTickCount();
@@ -82,7 +82,7 @@ GLine readCommand() {
 
 			if (c == '\r' || c == '\n') {
 				Board_LED_Set(1, false);
-				return GLine {inputString};
+				return inputString;
 			}
 		} else if (xTaskGetTickCount() - startTime > READ_TIMEOUT) {
 			throw -1;  // Read timeout exceeded
@@ -94,6 +94,7 @@ GLine readCommand() {
 static void vTask1(void *pvParameters) {
 	std::list<GLine> lineList;
 	bool failed {true};
+	char* command {nullptr};
 
 	printf("Plotter started\r\n");
 	#ifdef DRY_RUN
@@ -107,13 +108,16 @@ static void vTask1(void *pvParameters) {
 	while (1) {
 		do {
 			try {  // Successfully read command
-				GLine line {readCommand()};
+				command = readCommand();
+				GLine line {command};
 				auto type = line.getCode()->getType();
-				if (strstr(type, "M10") || strstr(type, "M11")) {  // Not caching status commands
+				if (type == GCode::CodeType::M10 || type == GCode::CodeType::M11) {  // Not caching status commands
 					break;
 				} else {  // Caching command
 					lineList.push_back(line);
 					printf("%s", line.getCode()->getReply());
+					delete[] (command);
+					command = nullptr;
 				}
 				failed = false;
 			} catch (int statusCode) {  // Failed to read command
@@ -133,6 +137,13 @@ static void vTask1(void *pvParameters) {
 		}
 		lineList.clear();  // Clearing cache
 		ITM_write("Cache exhausted, refilling...\r\n");
+		if (command) {
+			GLine line {command};
+			line.getCode()->execute();
+			printf("%s", line.getCode()->getReply());
+			delete[] (command);
+			command = nullptr;
+		}
 	}
 }
 
