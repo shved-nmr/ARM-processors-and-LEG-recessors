@@ -78,9 +78,9 @@ static void vTask1(void *pvParameters) {
 				GLine line {inputString};
 
 				line.getCode()->execute();  // This should be a blocking call
-				debug(line.getCode()->getType());
-				debug(": ");
-				debug(line.getCode()->getReply());
+				debug_log(line.getCode()->getType());
+				debug_log(": ");
+				debug_log(line.getCode()->getReply());
 				printf("%s", line.getCode()->getReply());
 				log("Command executed\r\n");
 
