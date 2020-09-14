@@ -16,6 +16,7 @@
 #endif
 #endif
 
+
 #include <cr_section_macros.h>
 
 #include "FreeRTOS.h"
@@ -25,6 +26,7 @@
 
 #include "GParser/GLine.h"
 #include "platform.h"
+#include "sct.h"
 
 
 void startup() {
@@ -43,6 +45,7 @@ static void prvSetupHardware(void)
 	SystemCoreClockUpdate();
 	Board_Init();
 	ITM_init();
+	sct_init();
 
 	setLaserPower(0);
 	Board_LED_Set(0, false);
