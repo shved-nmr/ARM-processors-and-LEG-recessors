@@ -11,25 +11,25 @@
 #include "chip.h"
 
 
-#define SYSAHBCLKCTRL1 ( *(uint32_t*) 0x400740C8 )
-#define PRESETCTRL1 ( *(uint32_t*) 0x40074048 )
-#define PINASSIGN7 ( *(uint32_t*) 0x4003801C )
-#define PINASSIGN8 ( *(uint32_t*) 0x40038020 )
-#define CONF ( *(uint32_t*) 0x1C018000 )
-#define COUNT_L ( *(uint16_t*) 0x1C018040 )
-#define COUNT_H ( *(uint16_t*) 0x1C018042 )
-#define MATCH0_L ( *(uint16_t*) 0x1C018100 )
-#define MATCH0_H ( *(uint16_t*) 0x1C018110 )
-#define MATCH1_L ( *(uint16_t*) 0x1C018120 )
-#define MATCH1_H ( *(uint16_t*) 0x1C018130 )
-#define EV0_CTRL_L ( *(uint32_t*) 0x1C018304 )
-#define EV0_CTRL_H ( *(uint32_t*) 0x1C01C304 )
-#define EV0_STATE_L ( *(uint32_t*) 0x1C018300 )
-#define EV0_STATE_H ( *(uint32_t*) 0x1C01C300 )
-#define EVEN ( *(uint32_t*) 0x1C0180F0 )
-#define EVFLAG ( *(uint32_t*) 0x1C0180F4 )
-#define CTR ( *(uint32_t*) 0x1C018004 )
-#define ISER0 ( *(uint32_t*) 0xE000E100 )
+#define SYSAHBCLKCTRL1 ( *(uint32_t*) ( 0x400740C8 ) )
+#define PRESETCTRL1 ( *(uint32_t*) ( 0x40074048 ) )
+#define PINASSIGN7 ( *(uint32_t*) ( 0x4003801C ) )
+#define PINASSIGN8 ( *(uint32_t*) ( 0x40038020 ) )
+#define CONF ( *(uint32_t*) ( 0x1C018000 ) )
+#define COUNT_L ( *(uint16_t*) ( 0x1C018040 ) )
+#define COUNT_H ( *(uint16_t*) ( 0x1C018042 ) )
+#define MATCH_L(x) ( *(uint16_t*) ( 0x1C018100 + 2 * x ) )
+#define MATCH_H(x) ( *(uint16_t*) ( 0x1C018110 + 2 * x ) )
+#define EV_CTRL_L(x) ( *(uint32_t*) ( 0x1C018304 + 4 * x ) )
+#define EV_CTRL_H(x) ( *(uint32_t*) ( 0x1C01C304 + 4 * x ) )
+#define EV_STATE_L(x) ( *(uint32_t*) ( 0x1C018300 + 4 * x) )
+#define EV_STATE_H(x) ( *(uint32_t*) ( 0x1C01C300 + 4 * x ) )
+#define OUT_SET_L(x) ( *(uint32_t*) ( 0x1C018500 + 4 * x ) )
+#define OUT_CLR_L(x) ( *(uint32_t*) ( 0x1C018504 + 4 * x ) )
+#define EVEN ( *(uint32_t*) ( 0x1C0180F0 ) )
+#define EVFLAG ( *(uint32_t*) ( 0x1C0180F4 ) )
+#define CTR ( *(uint32_t*) ( 0x1C018004 ) )
+#define ISER0 ( *(uint32_t*) ( 0xE000E100 ) )
 
 
 extern "C" {
@@ -61,14 +61,18 @@ void sct_init() {
 	EVEN |= 1u;  // Enabling interrupts for event 0
 
 	// Setting up low interrupt
-	MATCH0_L = 0xff;  // Setting match value
-	EV0_STATE_L = ~0;  // Enabling event 0
-	EV0_CTRL_L |= 1u << 12u;  // Configuring match event
+	MATCH_L(0) = 0xff;  // Setting match value
+	EV_STATE_L(0) = ~0;  // Enabling event 0
+	EV_CTRL_L(0) |= 1u << 12u;  // Configuring match event
 
 	// Setting up high interrupt
-	MATCH0_H = 0xff;
-	EV0_STATE_H = ~0;
-	EV0_CTRL_H |= 1u << 4u | 1u << 12u;
+	MATCH_H(0) = 0xff;
+	EV_STATE_H(0) = ~0;
+	EV_CTRL_H(0) |= 1u << 4u | 1u << 12u;
+
+	// Configuring pin outputs
+	OUT_SET_L(0) = 1;
+	OUT_CLR_L(1) = 1u << 1;
 
 	EVFLAG = 1u;  // Enabling interrupt
 	ISER0 |= 1u << 16 | 1u << 17;  // Enabling interrupt in the NVIC
