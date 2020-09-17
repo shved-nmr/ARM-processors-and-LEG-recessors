@@ -1,12 +1,12 @@
 /*
- * sct.cpp
+ * stepper.cpp
  *
  *  Created on: Sep 14, 2020
  *      Author: MStefan99
  */
 
 
-#include "sct.h"
+#include "stepper.h"
 
 
 #define SYSAHBCLKCTRL1 ( *(uint32_t*) ( 0x400740C8 ) )
@@ -106,7 +106,7 @@ void timer_start(LPC_SCT_T* timer) {
 }
 
 
-void sct_init() {
+void stepper_init() {
 	SYSAHBCLKCTRL1 |= 1u << 2 | 1u << 3;  // enable clock to SCT 0 and 1
 	PRESETCTRL1 &= ~(1u << 2 | 1u << 3);  // clear SCT reset
 

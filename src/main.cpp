@@ -26,7 +26,7 @@
 
 #include "GParser/GLine.h"
 #include "platform.h"
-#include "sct.h"
+#include "stepper.h"
 
 
 void startup() {
@@ -45,7 +45,7 @@ static void prvSetupHardware(void)
 	SystemCoreClockUpdate();
 	Board_Init();
 	ITM_init();
-	sct_init();
+	stepper_init();
 
 	setLaserPower(0);
 	Board_LED_Set(0, false);
