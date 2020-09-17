@@ -14,6 +14,9 @@
 #include "chip.h"
 
 
+#define SAFE_PPS 500
+
+
 void sct_init();  // Call this before any other function
 void stepper_move(unsigned int pps, unsigned int stepCountX, unsigned int stepCountY);  // Call this function to move given number of steps
 

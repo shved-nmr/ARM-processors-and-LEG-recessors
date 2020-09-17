@@ -22,6 +22,7 @@ static uint32_t currentXSteps;
 static uint32_t currentYSteps;
 static uint32_t maxXPPS;
 static uint32_t maxYPPS;
+static uint32_t currentSafePPS {SAFE_PPS};
 
 
 uint32_t getPrescaler(uint32_t pps) {
@@ -45,7 +46,8 @@ int getPPS(uint32_t currentSteps, uint32_t totalSteps, uint32_t maxPPS) {
 	 * x is current position (equal to currentSteps).
 	 */
 	float h = (float)totalSteps * totalSteps / 4.0;
-	return ((-(float)currentSteps * currentSteps + (float)totalSteps * currentSteps) * (maxPPS - 500.0) / h) + 500.0;
+	return ((-(float)currentSteps * currentSteps + (float)totalSteps * currentSteps)
+			* ((float)maxPPS - currentSafePPS) / h) + currentSafePPS;
 }
 
 
@@ -98,7 +100,7 @@ void timer_init(LPC_SCT_T* timer) {
 
 
 void timer_start(LPC_SCT_T* timer) {
-	timer->MATCHREL[0].U = getPrescaler(500);  // setting prescaler
+	timer->MATCHREL[0].U = getPrescaler(currentSafePPS);  // setting prescaler
 	timer->COUNT_U = 0;  // reset counter to 0
 	timer->CTRL_L &= ~(1 << 2);  // unhalt timer
 }
@@ -125,6 +127,12 @@ void stepper_move(unsigned int pps, unsigned int stepCountX, unsigned int stepCo
 	currentXSteps = currentYSteps = 0;
 	maxXPPS = pps * (stepCountX / mid);
 	maxYPPS = pps * (stepCountY / mid);
+
+	if (maxXPPS < SAFE_PPS || maxYPPS < SAFE_PPS) {
+		currentSafePPS = maxXPPS < maxYPPS? maxXPPS : maxYPPS;
+	} else {
+		currentSafePPS = SAFE_PPS;
+	}
 
 	if (stepCountX) {
 		timer_start(LPC_SCT0);
