@@ -22,6 +22,7 @@
 
 #include "GParser/GLine.h"
 #include "platform.h"
+#include "plotter.h"
 #include "log.h"
 
 
@@ -68,6 +69,8 @@ static void prvSetupHardware(void) {
 	Board_LED_Set(0, false);
 	Board_LED_Set(1, false);
 	Board_LED_Set(2, false);
+
+	plotter_init();
 	log("Hardware setup done\r\n");
 }
 
@@ -76,7 +79,16 @@ char* readCommand() {
 	auto inputString = new char[80] {};
 	int i {0};
 	char c;
-	auto startTime = xTaskGetTickCount();
+
+	printf("Plotter started\r\n");
+#ifdef DRY_RUN
+	printf("Dry run mode enabled\r\n");
+#else
+	printf("Warning: Dry run mode disabled!\r\n");
+#endif
+	startup();
+	plotter_calibrate();
+
 
 	while (1) {
 		if (dbgu->read(c)) {
@@ -175,4 +187,3 @@ int main(void) {
 	vTaskStartScheduler();
 	return 1;
 }
-
