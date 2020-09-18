@@ -87,8 +87,12 @@ char* readCommand() {
 	printf("Warning: Dry run mode disabled!\r\n");
 #endif
 	startup();
+	plotter_setDim(100, 150);
 	plotter_calibrate();
-
+	plotter_moveTo(73, 97, 100);
+	plotter_moveTo(63, 138, 500);
+	plotter_moveTo(17, 29, 1000);
+	plotter_moveTo(94, 7, 50);
 
 	while (1) {
 		if (dbgu->read(c)) {

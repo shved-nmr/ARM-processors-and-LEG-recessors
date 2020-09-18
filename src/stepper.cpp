@@ -110,8 +110,8 @@ void stepper_init() {
 	SYSAHBCLKCTRL1 |= 1u << 2 | 1u << 3;  // enable clock to SCT 0 and 1
 	PRESETCTRL1 &= ~(1u << 2 | 1u << 3);  // clear SCT reset
 
-	PINASSIGN7 = (~(0xff << 8) | 24u << 8);  // enable SCT 0 output on pin 0_24
-	PINASSIGN8 = (~(0xff) | 27u);  // enable SCT 1 output on pin 0_27
+	PINASSIGN7 = (~(0xff << 8) | 27u << 8);  // enable SCT 0 output on pin 0_24
+	PINASSIGN8 = (~(0xff) | 24u);  // enable SCT 1 output on pin 0_27
 	ISER0 |= 1u << 16 | 1u << 17;  // enable interrupts in the NVIC
 
 	timer_init(LPC_SCT0);

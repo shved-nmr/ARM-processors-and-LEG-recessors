@@ -13,14 +13,16 @@
 #define PINASSIGN8 ( *(uint32_t*) ( 0x40038020 ) )
 
 
-static uint32_t sizeX;
-static uint32_t sizeY;
-static float currentX {0};
-static float currentY {0};
+static uint32_t stepsX {0};
+static uint32_t stepsY {0};
+static uint32_t sizeX {0};
+static uint32_t sizeY {0};
+static uint32_t currentStepsX {0};
+static uint32_t currentStepsY {0};
 
 
 void plotter_init() {
-
+	PINASSIGN7 = PINASSIGN8 = ~0;
 }
 
 
@@ -35,46 +37,79 @@ void plotter_calibrate() {
 	DigitalIoPin dirY {1, 0, DigitalIoPin::pinMode::output};
 	DigitalIoPin stepY {0, 24, DigitalIoPin::pinMode::output};
 
-	PINASSIGN7 = PINASSIGN8 = ~0;
-
 	while (limXHigh || limXLow || limYLow || limYHigh);
 
 	// Calibrating x-axis
 	while (!limXLow) {
 		dirX = false;
 		stepX = true;
-		vTaskDelay(10);
+		vTaskDelay(1);
 		stepX = false;
-		vTaskDelay(10);
+		vTaskDelay(1);
 	}
 
 	while (!limXHigh) {
 		dirX = true;
-		++sizeX;
+		++stepsX;
 		stepX = true;
-		vTaskDelay(10);
+		vTaskDelay(1);
 		stepX = false;
-		vTaskDelay(10);
+		vTaskDelay(1);
 	}
-	currentX = 0;
 
 	// Calibrating y-axis
 	while (!limYLow) {
 		dirY = false;
 		stepY = true;
-		vTaskDelay(10);
+		vTaskDelay(1);
 		stepY = false;
-		vTaskDelay(10);
+		vTaskDelay(1);
 	}
 
 	while (!limYHigh) {
 		dirY = true;
-		++sizeY;
+		++stepsY;
 		stepY = true;
-		vTaskDelay(10);
+		vTaskDelay(1);
 		stepY = false;
-		vTaskDelay(10);
+		vTaskDelay(1);
 	}
-	currentY = 0;
+
+	stepper_init();
+}
+
+
+void plotter_setDim(uint32_t x, uint32_t y) {
+	sizeX = x;
+	sizeY = y;
+}
+
+
+void plotter_moveTo(float x, float y, uint32_t pps) {
+	DigitalIoPin dirX {0, 28, DigitalIoPin::pinMode::output};
+	DigitalIoPin dirY {1, 0, DigitalIoPin::pinMode::output};
+
+	uint32_t targetStepsX = x / (float)sizeX * (float)stepsX;
+	uint32_t targetStepsY = y / (float)sizeY * (float)stepsY;
+
+	int dx = targetStepsX - currentStepsX;
+	int dy = targetStepsY - currentStepsY;
+
+	if (dx < 0) {
+		dx = -dx;
+		dirX = true;
+	} else {
+		dirX = false;
+	}
+	if (dy < 0) {
+		dirY = true;
+		dy = -dy;
+	} else {
+		dirY = false;
+	}
+
+	stepper_move(pps, dx, dy);
+	currentStepsX = targetStepsX;
+	currentStepsY = targetStepsY;
 }
 
