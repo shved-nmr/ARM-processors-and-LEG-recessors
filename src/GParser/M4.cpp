@@ -27,8 +27,8 @@ void M4::execute() const {
 }
 
 
-const char* M4::getType() const {
-	return "M4";
+const GCode::CodeType M4::getType() const {
+	return GCode::CodeType::M4;
 }
 
 

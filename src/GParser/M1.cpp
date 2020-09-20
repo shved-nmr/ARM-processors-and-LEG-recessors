@@ -27,8 +27,8 @@ void M1::execute() const {
 }
 
 
-const char* M1::getType() const {
-	return "M1";
+const GCode::CodeType M1::getType() const {
+	return GCode::CodeType::M1;
 }
 
 
