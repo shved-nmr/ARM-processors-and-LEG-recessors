@@ -119,6 +119,12 @@ void stepper_init() {
 }
 
 
+void stepper_reenable_pins() {
+	PINASSIGN7 = ~0;  // disable SCT 0 output
+	PINASSIGN8 = ~0;  // disable SCT 1 output
+}
+
+
 void stepper_move(unsigned int pps, unsigned int stepCountX, unsigned int stepCountY) {
 	float mid = (stepCountX + stepCountY) / 2.0;
 
