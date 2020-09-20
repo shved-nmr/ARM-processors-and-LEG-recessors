@@ -100,14 +100,14 @@ static void vTask1(void *pvParameters) {
 	bool failed {true};
 	char* command {nullptr};
 
-	printf("Plotter started\r\n");
+	info("Plotter started\r\n");
 	#ifdef DRY_RUN
-		printf("Dry run mode enabled\r\n");
+		info("Dry run mode enabled\r\n");
 	#else
-		printf("Warning: Dry run mode disabled!\r\n");
+		warn("Warning: Dry run mode disabled!\r\n");
 	#endif
 	startup();
-	printf("Ready to plot!\r\n");
+	info("Ready to plot!\r\n");
 
 	while (1) {
 		do {
@@ -118,6 +118,7 @@ static void vTask1(void *pvParameters) {
 				if (type == GCode::CodeType::M10 || type == GCode::CodeType::M11) {  // Not caching status commands
 					break;
 				} else {  // Caching command
+					debug_log("Command read\r\n");
 					lineList.push_back(line);
 					printf("%s", line.getCode()->getReply());
 					delete[] (command);
@@ -126,7 +127,7 @@ static void vTask1(void *pvParameters) {
 				failed = false;
 			} catch (int statusCode) {  // Failed to read command
 				if (!failed) {
-					printf("Failed to read command\r\nIs plotting done?\r\n");
+					log("Failed to read command\r\nIs plotting done?\r\n");
 					Board_LED_Set(1, false);
 					Board_LED_Set(2, false);
 					Board_LED_Set(0, true);
@@ -140,7 +141,7 @@ static void vTask1(void *pvParameters) {
 			vTaskDelay(10);  // Delay simulating extruder movement
 		}
 		lineList.clear();  // Clearing cache
-		ITM_write("Cache exhausted, refilling...\r\n");
+		debug_log("Cache exhausted, refilling...\r\n");
 		if (command) {
 			GLine line {command};
 			line.getCode()->execute();
