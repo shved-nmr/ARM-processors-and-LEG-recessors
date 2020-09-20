@@ -28,8 +28,8 @@ void G1::execute() const {
 }
 
 
-const char* G1::getType() const {
-	return "G1";
+const GCode::CodeType G1::getType() const {
+	return GCode::CodeType::G1;
 }
 
 

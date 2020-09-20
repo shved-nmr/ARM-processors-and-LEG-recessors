@@ -51,6 +51,15 @@ const GCode* GLine::getCode() const {
 }
 
 
+GLine& GLine::operator=(const GLine& line) {
+	if (this != &line) {
+		delete (this->code);
+		this->code = line.code->clone();
+	}
+	return *this;
+}
+
+
 GLine::~GLine() {
 	delete (this->code);
 }

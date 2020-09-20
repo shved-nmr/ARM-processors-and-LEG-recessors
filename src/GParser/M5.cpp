@@ -36,8 +36,8 @@ void M5::execute() const {
 }
 
 
-const char* M5::getType() const {
-	return "M5";
+const GCode::CodeType M5::getType() const {
+	return GCode::CodeType::M5;
 }
 
 

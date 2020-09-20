@@ -28,6 +28,8 @@ public:
 	GLine(const GLine& line);
 	~GLine();
 
+	GLine& operator=(const GLine& line);
+
 	const GCode* getCode() const;
 
 protected:
