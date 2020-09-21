@@ -22,7 +22,6 @@
 
 #include "GParser/GLine.h"
 #include "platform.h"
-#include "plotter.h"
 #include "log.h"
 
 
@@ -40,6 +39,7 @@ void startup() {
 		Board_LED_Set(1, false);
 		vTaskDelay(250);
 	}
+	platform_init();
 	log("Startup sequence finished\r\n");
 }
 
@@ -86,8 +86,6 @@ char* readCommand() {
 	printf("Warning: Dry run mode disabled!\r\n");
 #endif
 	startup();
-	plotter_setDim(100, 150);
-	plotter_calibrate();
 
 	while (1) {
 		if (dbgu->read(c)) {

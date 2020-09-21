@@ -18,6 +18,7 @@
 
 
 void plotter_setDim(uint32_t sizeX, uint32_t sizeY);
+void plotter_setDir(bool dirX, bool dirY);
 void plotter_moveTo(float x, float y, uint32_t pps);
 void plotter_calibrate();
 void plotter_home();

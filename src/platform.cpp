@@ -17,7 +17,6 @@ static Direction Y_DIRECTION {Direction::counterClockwise};
 static uint8_t PLOTTING_SPEED {80};
 static uint8_t PEN_UP {160};
 static uint8_t PEN_DOWN {90};
-static uint8_t PEN_POSITION {PEN_UP};
 
 
 // Getters
@@ -61,11 +60,6 @@ uint8_t getPenDown() {
 }
 
 
-uint8_t getPenPosition() {
-	return PEN_POSITION;
-}
-
-
 // Setters
 void setXLength(unsigned int len) {
 	X_LENGTH = len;
@@ -102,12 +96,31 @@ void setPenDown(uint8_t val) {
 }
 
 
+// Platform calls
+void platform_init() {
+	setPenPosition(PEN_UP);
+	setLaserPower(0);
+	plotter_setDim(X_LENGTH, Y_LENGTH);
+	plotter_setDir(X_DIRECTION == Direction::clockwise,
+			Y_DIRECTION == Direction::clockwise);
+	plotter_calibrate();
+}
+
 void setPenPosition(uint8_t val) {
-	PEN_POSITION = val;
 }
 
 
 void setLaserPower(uint8_t power) {
 
+}
+
+
+void moveExtruderTo(float x, float y) {
+	plotter_moveTo(x, y, PLOTTING_SPEED);
+}
+
+
+void moveExtruderHome() {
+	plotter_home();
 }
 
