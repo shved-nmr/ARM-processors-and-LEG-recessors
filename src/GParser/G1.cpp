@@ -23,7 +23,7 @@ G1* G1::clone() const {
 
 void G1::execute() const {
 #ifndef DRY_RUN
-	// Move the extruder
+	moveExtruderTo(this->xCoord, this->yCoord);
 #endif
 }
 

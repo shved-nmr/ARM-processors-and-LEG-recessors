@@ -21,7 +21,7 @@ G28* G28::clone() const {
 
 void G28::execute() const {
 #ifndef DRY_RUN
-	// Move the extruder
+	moveExtruderHome();
 #endif
 }
 
