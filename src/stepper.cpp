@@ -7,13 +7,13 @@
 
 
 #include "stepper.h"
-
-
 #define SYSAHBCLKCTRL1 ( *(uint32_t*) ( 0x400740C8 ) )
 #define PRESETCTRL1 ( *(uint32_t*) ( 0x40074048 ) )
 #define PINASSIGN7 ( *(uint32_t*) ( 0x4003801C ) )
 #define PINASSIGN8 ( *(uint32_t*) ( 0x40038020 ) )
 #define ISER0 ( *(uint32_t*) ( 0xE000E100 ) )
+#ifdef USE_SCT
+
 
 
 static uint32_t totalXSteps;
@@ -119,12 +119,6 @@ void stepper_init() {
 }
 
 
-void stepper_reenable_pins() {
-	PINASSIGN7 = ~0;  // disable SCT 0 output
-	PINASSIGN8 = ~0;  // disable SCT 1 output
-}
-
-
 void stepper_move(unsigned int pps, unsigned int stepCountX, unsigned int stepCountY) {
 	float mid = (stepCountX + stepCountY) / 2.0;
 
@@ -149,6 +143,12 @@ void stepper_move(unsigned int pps, unsigned int stepCountX, unsigned int stepCo
 	}
 
 	while (!(LPC_SCT0->CTRL_L & (1 << 2)) || !(LPC_SCT1->CTRL_L & (1 << 2)));  // Blocking until movement is complete
+}
+#endif
+
+void stepper_reenable_pins() {
+	PINASSIGN7 = ~0;  // disable SCT 0 output
+	PINASSIGN8 = ~0;  // disable SCT 1 output
 }
 
 
