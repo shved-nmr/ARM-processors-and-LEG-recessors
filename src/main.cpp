@@ -64,13 +64,11 @@ static void prvSetupHardware(void) {
 	};
 	dbgu = new LpcUart(cfg);
 
-
 	setLaserPower(0);
 	Board_LED_Set(0, false);
 	Board_LED_Set(1, false);
 	Board_LED_Set(2, false);
 
-	plotter_init();
 	log("Hardware setup done\r\n");
 }
 
@@ -79,6 +77,7 @@ char* readCommand() {
 	auto inputString = new char[80] {};
 	int i {0};
 	char c;
+	auto startTime {xTaskGetTickCount()};
 
 	printf("Plotter started\r\n");
 #ifdef DRY_RUN
@@ -89,10 +88,6 @@ char* readCommand() {
 	startup();
 	plotter_setDim(100, 150);
 	plotter_calibrate();
-	plotter_moveTo(73, 97, 100);
-	plotter_moveTo(63, 138, 500);
-	plotter_moveTo(17, 29, 1000);
-	plotter_moveTo(94, 7, 50);
 
 	while (1) {
 		if (dbgu->read(c)) {
@@ -154,7 +149,6 @@ static void vTask1(void *pvParameters) {
 
 		for (const auto line: lineList) {  // Executing cached commands
 			line.getCode()->execute();  // This should be a blocking call
-			vTaskDelay(10);  // Delay simulating extruder movement
 		}
 		lineList.clear();  // Clearing cache
 		debug_log("Cache exhausted, refilling...\r\n");

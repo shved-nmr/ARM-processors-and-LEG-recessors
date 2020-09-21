@@ -17,7 +17,6 @@
 #include "stepper.h"
 
 
-void plotter_init();  // Call this function before any other function
 void plotter_setDim(uint32_t sizeX, uint32_t sizeY);
 void plotter_moveTo(float x, float y, uint32_t pps);
 void plotter_calibrate();
