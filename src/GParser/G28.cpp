@@ -26,7 +26,7 @@ void G28::execute() const {
 }
 
 
-const char* G28::getType() const {
-	return "G28";
+const GCode::CodeType G28::getType() const {
+	return GCode::CodeType::G28;
 }
 

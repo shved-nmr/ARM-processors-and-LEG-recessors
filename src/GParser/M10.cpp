@@ -32,8 +32,8 @@ void M10::execute() const {
 }
 
 
-const char* M10::getType() const {
-	return "M10";
+const GCode::CodeType M10::getType() const {
+	return GCode::CodeType::M10;
 }
 
 
