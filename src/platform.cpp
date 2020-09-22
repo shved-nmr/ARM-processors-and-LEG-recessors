@@ -9,9 +9,9 @@
 #include "platform.h"
 
 
-static unsigned int X_LENGTH {310};
-static unsigned int Y_LENGTH {380};
-static Direction X_DIRECTION {Direction::clockwise};
+static unsigned int X_LENGTH {150};
+static unsigned int Y_LENGTH {100};
+static Direction X_DIRECTION {Direction::counterClockwise};
 static Direction Y_DIRECTION {Direction::counterClockwise};
 
 static uint8_t PLOTTING_SPEED {80};
@@ -102,11 +102,13 @@ void platform_init() {
 	setLaserPower(0);
 	plotter_setDim(X_LENGTH, Y_LENGTH);
 	plotter_setDir(X_DIRECTION == Direction::clockwise,
-			Y_DIRECTION == Direction::clockwise);
+			Y_DIRECTION == Direction::clockwise);  // TODO: check hardware direction
 	plotter_calibrate();
 }
 
+
 void setPenPosition(uint8_t val) {
+
 }
 
 

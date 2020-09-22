@@ -126,16 +126,13 @@ void stepper_reenablePins() {
 
 
 void stepper_move(unsigned int pps, unsigned int stepCountX, unsigned int stepCountY) {
-	float mid = (stepCountX + stepCountY) / 2.0;
-
 	totalXSteps = stepCountX;
 	totalYSteps = stepCountY;
 	currentXSteps = currentYSteps = 0;
-	maxXPPS = pps * (stepCountX / mid);
-	maxYPPS = pps * (stepCountY / mid);
+	maxXPPS = maxYPPS = pps;
 
-	if (maxXPPS < SAFE_PPS || maxYPPS < SAFE_PPS) {
-		currentSafePPS = maxXPPS < maxYPPS? maxXPPS : maxYPPS;
+	if (pps < SAFE_PPS) {
+		currentSafePPS = pps;
 	} else {
 		currentSafePPS = SAFE_PPS;
 	}

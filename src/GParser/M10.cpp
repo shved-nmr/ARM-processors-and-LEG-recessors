@@ -11,7 +11,7 @@
 M10::M10() {
 	this->reply = new char[80];
 	snprintf(this->reply, 79, "M10 XY %i %i 0.00 0.00 A%i B%i S%i H0 U%i D%i\r\nOK\r\n",
-			getYLength(), getXLength(),
+			getXLength(), getYLength(),
 			getXDirection(), getYDirection(),
 			getPlottingSpeed(), getPenUp(), getPenDown());
 }

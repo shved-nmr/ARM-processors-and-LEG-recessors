@@ -25,10 +25,8 @@
 #include "log.h"
 
 
-LpcUart* dbgu;
-
-
 char* readCommand();
+LpcUart* uart;
 
 
 void startup() {
@@ -49,25 +47,22 @@ static void prvSetupHardware(void) {
 	SystemCoreClockUpdate();
 	Board_Init();
 	ITM_init();
-	LpcPinMap none = {-1, -1};
-	LpcPinMap txpin = { 0, 18 };
-	LpcPinMap rxpin = { 0, 13 };
-	LpcUartConfig cfg = {
-			LPC_USART0,
-			115200,
-			UART_CFG_DATALEN_8 | UART_CFG_PARITY_NONE | UART_CFG_STOPLEN_1,
-			false,
-			txpin,
-			rxpin,
-			none,
-			none
-	};
-	dbgu = new LpcUart(cfg);
 
 	setLaserPower(0);
 	Board_LED_Set(0, false);
 	Board_LED_Set(1, false);
 	Board_LED_Set(2, false);
+
+	uart = new LpcUart({
+		LPC_USART0,
+		115200,
+		UART_CFG_DATALEN_8 | UART_CFG_PARITY_NONE | UART_CFG_STOPLEN_1,
+		false,
+		{0, 18},
+		{0, 13},
+		{-1, -1},
+		{-1, -1}
+	});
 
 	log("Hardware setup done\r\n");
 }
@@ -79,16 +74,8 @@ char* readCommand() {
 	char c;
 	auto startTime {xTaskGetTickCount()};
 
-	printf("Plotter started\r\n");
-#ifdef DRY_RUN
-	printf("Dry run mode enabled\r\n");
-#else
-	printf("Warning: Dry run mode disabled!\r\n");
-#endif
-	startup();
-
 	while (1) {
-		if (dbgu->read(c)) {
+		if (uart->read(c)) {
 			Board_LED_Set(1, true);
 			inputString[i] = c;
 			++i;
@@ -97,8 +84,9 @@ char* readCommand() {
 				Board_LED_Set(1, false);
 				return inputString;
 			}
-		} else if (xTaskGetTickCount() - startTime > READ_TIMEOUT) {
-			throw -1;  // Read timeout exceeded
+		} else if (xTaskGetTickCount() - startTime > READ_TIMEOUT || i > 79) {
+			delete[] (inputString);
+			return nullptr;
 		}
 	}
 }
@@ -120,21 +108,21 @@ static void vTask1(void *pvParameters) {
 
 	while (1) {
 		do {
-			try {  // Successfully read command
-				command = readCommand();
+			command = readCommand();
+			if (command) {  // Successfully read command
 				GLine line {command};
 				auto type = line.getCode()->getType();
 				if (type == GCode::CodeType::M10 || type == GCode::CodeType::M11) {  // Not caching status commands
 					break;
 				} else {  // Caching command
-					debug_log("Command read\r\n");
+					log("Command read\r\n");
 					lineList.push_back(line);
 					printf("%s", line.getCode()->getReply());
 					delete[] (command);
 					command = nullptr;
 				}
 				failed = false;
-			} catch (int statusCode) {  // Failed to read command
+			} else {  // Command was not read due to an error
 				if (!failed) {
 					log("Failed to read command\r\nIs plotting done?\r\n");
 					Board_LED_Set(1, false);
@@ -142,16 +130,19 @@ static void vTask1(void *pvParameters) {
 					Board_LED_Set(0, true);
 				}
 				failed = true;
+				break;
 			}
 		} while (lineList.size() < CACHE_SIZE);
 
 		for (const auto line: lineList) {  // Executing cached commands
+			log("Executing command...\r\n");
 			line.getCode()->execute();  // This should be a blocking call
 		}
 		lineList.clear();  // Clearing cache
-		debug_log("Cache exhausted, refilling...\r\n");
+		log("Cache exhausted, refilling...\r\n");
 		if (command) {
 			GLine line {command};
+			log("Executing status command\r\n");
 			line.getCode()->execute();
 			printf("%s", line.getCode()->getReply());
 			delete[] (command);
@@ -183,3 +174,4 @@ int main(void) {
 	vTaskStartScheduler();
 	return 1;
 }
+

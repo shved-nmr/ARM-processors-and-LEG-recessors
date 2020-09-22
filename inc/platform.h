@@ -8,7 +8,7 @@
 #ifndef PLATFORM_H_
 #define PLATFORM_H_
 
-#define DRY_RUN  // Remove to enable plotting
+//#define DRY_RUN  // Remove to enable plotting
 
 
 #include <cstdint>
