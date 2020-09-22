@@ -9,6 +9,7 @@
 
 #define CACHE_SIZE 20
 #define READ_TIMEOUT 5000
+#define DRY_RUN  // remove to enable laser and pen control
 
 
 #include <cr_section_macros.h>

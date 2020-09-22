@@ -118,7 +118,7 @@ void setLaserPower(uint8_t power) {
 
 
 void moveExtruderTo(float x, float y) {
-	plotter_moveTo(x, y, PLOTTING_SPEED);
+	plotter_moveTo(x, y, PLOTTING_SPEED * 10);
 }
 
 
