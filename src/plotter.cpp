@@ -102,15 +102,15 @@ void plotter_moveTo(float x, float y, uint32_t pps) {
 
 	if (dx < 0) {
 		dx = -dx;
-		dirX = true;
+		dirX = !directionX;
 	} else {
-		dirX = false;
+		dirX = directionX;
 	}
 	if (dy < 0) {
-		dirY = true;
+		dirY = !directionY;
 		dy = -dy;
 	} else {
-		dirY = false;
+		dirY = directionY;
 	}
 
 	stepper_move(pps, dx, dy);
