@@ -11,8 +11,8 @@
 
 static unsigned int X_LENGTH {150};
 static unsigned int Y_LENGTH {100};
-static Direction X_DIRECTION {Direction::counterClockwise};
-static Direction Y_DIRECTION {Direction::counterClockwise};
+static Direction X_DIRECTION {Direction::clockwise};
+static Direction Y_DIRECTION {Direction::clockwise};
 
 static uint8_t PLOTTING_SPEED {80};
 static uint8_t PEN_UP {160};

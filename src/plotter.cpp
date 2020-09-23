@@ -24,15 +24,15 @@ static bool directionY {true};
 
 
 void plotter_calibrate() {
-	DigitalIoPin limXLow {1, 3, DigitalIoPin::pinMode::pullup, true};
-	DigitalIoPin limXHigh {0, 0, DigitalIoPin::pinMode::pullup, true};
-	DigitalIoPin limYLow {0, 29, DigitalIoPin::pinMode::pullup, true};
-	DigitalIoPin limYHigh {0, 9, DigitalIoPin::pinMode::pullup, true};
+	DigitalIoPin limXLow {0, 29, DigitalIoPin::pinMode::pullup, true};
+	DigitalIoPin limXHigh {0, 9, DigitalIoPin::pinMode::pullup, true};
+	DigitalIoPin limYLow {1, 3, DigitalIoPin::pinMode::pullup, true};
+	DigitalIoPin limYHigh {0, 0, DigitalIoPin::pinMode::pullup, true};
 
-	DigitalIoPin dirX {0, 28, DigitalIoPin::pinMode::output};
-	DigitalIoPin stepX {0, 27, DigitalIoPin::pinMode::output};
-	DigitalIoPin dirY {1, 0, DigitalIoPin::pinMode::output};
-	DigitalIoPin stepY {0, 24, DigitalIoPin::pinMode::output};
+	DigitalIoPin dirX {1, 0, DigitalIoPin::pinMode::output};
+	DigitalIoPin stepX {0, 24, DigitalIoPin::pinMode::output};
+	DigitalIoPin dirY {0, 28, DigitalIoPin::pinMode::output};
+	DigitalIoPin stepY {0, 27, DigitalIoPin::pinMode::output};
 
 	stepper_reenablePins();
 
@@ -91,8 +91,8 @@ void plotter_setDir(bool dirX, bool dirY) {
 
 
 void plotter_moveTo(float x, float y, uint32_t pps) {
-	DigitalIoPin dirX {0, 28, DigitalIoPin::pinMode::output};
-	DigitalIoPin dirY {1, 0, DigitalIoPin::pinMode::output};
+	DigitalIoPin dirX {1, 0, DigitalIoPin::pinMode::output};
+	DigitalIoPin dirY {0, 28, DigitalIoPin::pinMode::output};
 
 	uint32_t targetStepsX = x / (float)sizeX * (float)stepsX;
 	uint32_t targetStepsY = y / (float)sizeY * (float)stepsY;
@@ -120,15 +120,15 @@ void plotter_moveTo(float x, float y, uint32_t pps) {
 
 
 void plotter_home() {
-	DigitalIoPin limXLow {1, 3, DigitalIoPin::pinMode::pullup, true};
-	DigitalIoPin limXHigh {0, 0, DigitalIoPin::pinMode::pullup, true};
-	DigitalIoPin limYLow {0, 29, DigitalIoPin::pinMode::pullup, true};
-	DigitalIoPin limYHigh {0, 9, DigitalIoPin::pinMode::pullup, true};
+	DigitalIoPin limXLow {0, 29, DigitalIoPin::pinMode::pullup, true};
+	DigitalIoPin limXHigh {0, 9, DigitalIoPin::pinMode::pullup, true};
+	DigitalIoPin limYLow {1, 3, DigitalIoPin::pinMode::pullup, true};
+	DigitalIoPin limYHigh {0, 0, DigitalIoPin::pinMode::pullup, true};
 
-	DigitalIoPin dirX {0, 28, DigitalIoPin::pinMode::output};
-	DigitalIoPin stepX {0, 27, DigitalIoPin::pinMode::output};
-	DigitalIoPin dirY {1, 0, DigitalIoPin::pinMode::output};
-	DigitalIoPin stepY {0, 24, DigitalIoPin::pinMode::output};
+	DigitalIoPin dirX {1, 0, DigitalIoPin::pinMode::output};
+	DigitalIoPin stepX {0, 24, DigitalIoPin::pinMode::output};
+	DigitalIoPin dirY {0, 28, DigitalIoPin::pinMode::output};
+	DigitalIoPin stepY {0, 27, DigitalIoPin::pinMode::output};
 
 	stepper_reenablePins();
 
