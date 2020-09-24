@@ -7,14 +7,14 @@
 
 
 #include "stepper.h"
+
 #define SYSAHBCLKCTRL1 ( *(uint32_t*) ( 0x400740C8 ) )
 #define PRESETCTRL1 ( *(uint32_t*) ( 0x40074048 ) )
 #define PINASSIGN7 ( *(uint32_t*) ( 0x4003801C ) )
 #define PINASSIGN8 ( *(uint32_t*) ( 0x40038020 ) )
 #define ISER0 ( *(uint32_t*) ( 0xE000E100 ) )
+
 #ifdef USE_SCT
-
-
 
 static uint32_t totalXSteps;
 static uint32_t totalYSteps;
@@ -23,7 +23,6 @@ static uint32_t currentYSteps;
 static uint32_t maxXPPS;
 static uint32_t maxYPPS;
 static uint32_t currentSafePPS {SAFE_PPS};
-
 
 uint32_t getPrescaler(uint32_t pps) {
 	return SystemCoreClock / 2 / pps - 1;
