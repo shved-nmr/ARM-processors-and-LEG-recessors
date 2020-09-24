@@ -36,3 +36,5 @@
 #Custom
 *.su
 /Release/
+
+.settings/language.settings.xml
