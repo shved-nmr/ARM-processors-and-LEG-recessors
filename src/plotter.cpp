@@ -22,59 +22,76 @@ static uint32_t currentStepsY {0};
 static bool directionX {true};
 static bool directionY {true};
 
+static bool initialized {false};
+
+static DigitalIoPin* limXLow;
+static DigitalIoPin* limXHigh;
+static DigitalIoPin* limYLow;
+static DigitalIoPin* limYHigh;
+static DigitalIoPin* dirX;
+static DigitalIoPin* stepX;
+static DigitalIoPin* dirY;
+static DigitalIoPin* stepY;
+
+
+static void init() {
+	limXLow = new DigitalIoPin {0, 29, DigitalIoPin::pinMode::pullup, true};
+	limXHigh = new DigitalIoPin {0, 9, DigitalIoPin::pinMode::pullup, true};
+	limYLow = new DigitalIoPin {1, 3, DigitalIoPin::pinMode::pullup, true};
+	limYHigh = new DigitalIoPin {0, 0, DigitalIoPin::pinMode::pullup, true};
+
+	dirX = new DigitalIoPin {1, 0, DigitalIoPin::pinMode::output};
+	stepX = new DigitalIoPin {0, 24, DigitalIoPin::pinMode::output};
+	dirY = new DigitalIoPin {0, 28, DigitalIoPin::pinMode::output};
+	stepY = new DigitalIoPin {0, 27, DigitalIoPin::pinMode::output};
+
+	initialized = true;
+}
+
 
 void plotter_calibrate() {
-	DigitalIoPin limXLow {0, 29, DigitalIoPin::pinMode::pullup, true};
-	DigitalIoPin limXHigh {0, 9, DigitalIoPin::pinMode::pullup, true};
-	DigitalIoPin limYLow {1, 3, DigitalIoPin::pinMode::pullup, true};
-	DigitalIoPin limYHigh {0, 0, DigitalIoPin::pinMode::pullup, true};
-
-	DigitalIoPin dirX {1, 0, DigitalIoPin::pinMode::output};
-	DigitalIoPin stepX {0, 24, DigitalIoPin::pinMode::output};
-	DigitalIoPin dirY {0, 28, DigitalIoPin::pinMode::output};
-	DigitalIoPin stepY {0, 27, DigitalIoPin::pinMode::output};
-
+	if (!initialized) {
+		init();
+	}
 	stepper_reenablePins();
 
-	while (limXHigh || limXLow || limYLow || limYHigh);
+	while (*limXHigh || *limXLow || *limYLow || *limYHigh);
 
 	// Calibrating x-axis
 	do {
-		dirX = directionX;
-		stepX = true;
+		*dirX = directionX;
+		*stepX = true;
 		vTaskDelay(1);
-		stepX = false;
+		*stepX = false;
 		vTaskDelay(1);
-	} while (!limXLow && !limXHigh);
+	} while (!*limXLow && !*limXHigh);
 
 	do {
-		dirX = !directionX;
+		*dirX = !directionX;
 		++stepsX;
-		stepX = true;
+		*stepX = true;
 		vTaskDelay(1);
-		stepX = false;
+		*stepX = false;
 		vTaskDelay(1);
-	} while (!limXLow && !limXHigh);
+	} while (!*limXLow && !*limXHigh);
 
 	// Calibrating y-axis
 	do {
-		dirY = directionY;
-		stepY = true;
+		*dirY = directionY;
+		*stepY = true;
 		vTaskDelay(1);
-		stepY = false;
+		*stepY = false;
 		vTaskDelay(1);
-	} while (!limYLow && !limYHigh);
+	} while (!*limYLow && !*limYHigh);
 
 	do {
-		dirY = !directionY;
+		*dirY = !directionY;
 		++stepsY;
-		stepY = true;
+		*stepY = true;
 		vTaskDelay(1);
-		stepY = false;
+		*stepY = false;
 		vTaskDelay(1);
-	} while (!limYLow && !limYHigh);
-
-	stepper_init();
+	} while (!*limYLow && !*limYHigh);
 }
 
 
@@ -91,8 +108,13 @@ void plotter_setDir(bool dirX, bool dirY) {
 
 
 void plotter_moveTo(float x, float y, uint32_t pps) {
-	DigitalIoPin dirX {1, 0, DigitalIoPin::pinMode::output};
-	DigitalIoPin dirY {0, 28, DigitalIoPin::pinMode::output};
+	if (!initialized) {
+		init();
+	}
+
+	if (!stepsX || !stepsY || !sizeX || !sizeY) {
+		return;
+	}
 
 	uint32_t targetStepsX = x / (float)sizeX * (float)stepsX;
 	uint32_t targetStepsY = y / (float)sizeY * (float)stepsY;
@@ -102,15 +124,15 @@ void plotter_moveTo(float x, float y, uint32_t pps) {
 
 	if (dx < 0) {
 		dx = -dx;
-		dirX = !directionX;
+		*dirX = !directionX;
 	} else {
-		dirX = directionX;
+		*dirX = directionX;
 	}
 	if (dy < 0) {
-		dirY = !directionY;
+		*dirY = !directionY;
 		dy = -dy;
 	} else {
-		dirY = directionY;
+		*dirY = directionY;
 	}
 
 	stepper_move(pps, dx, dy);
@@ -120,37 +142,29 @@ void plotter_moveTo(float x, float y, uint32_t pps) {
 
 
 void plotter_home() {
-	DigitalIoPin limXLow {0, 29, DigitalIoPin::pinMode::pullup, true};
-	DigitalIoPin limXHigh {0, 9, DigitalIoPin::pinMode::pullup, true};
-	DigitalIoPin limYLow {1, 3, DigitalIoPin::pinMode::pullup, true};
-	DigitalIoPin limYHigh {0, 0, DigitalIoPin::pinMode::pullup, true};
-
-	DigitalIoPin dirX {1, 0, DigitalIoPin::pinMode::output};
-	DigitalIoPin stepX {0, 24, DigitalIoPin::pinMode::output};
-	DigitalIoPin dirY {0, 28, DigitalIoPin::pinMode::output};
-	DigitalIoPin stepY {0, 27, DigitalIoPin::pinMode::output};
-
+	if (!initialized) {
+		init();
+	}
 	stepper_reenablePins();
 
 	do {
-		dirX = !directionX;
+		*dirX = !directionX;
 		++stepsX;
-		stepX = true;
+		*stepX = true;
 		vTaskDelay(1);
-		stepX = false;
+		*stepX = false;
 		vTaskDelay(1);
-	} while (!limYLow && !limYHigh);
+	} while (!*limXLow && !*limXHigh);
 
 	do {
-		dirY = !directionY;
+		*dirY = !directionY;
 		++stepsY;
-		stepY = true;
+		*stepY = true;
 		vTaskDelay(1);
-		stepY = false;
+		*stepY = false;
 		vTaskDelay(1);
-	} while (!limYLow && !limYHigh);
+	} while (!*limYLow && !*limYHigh);
 
-	stepper_init();
 	currentStepsX = currentStepsY = 0;
 }
 
