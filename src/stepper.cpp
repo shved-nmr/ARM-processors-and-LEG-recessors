@@ -16,6 +16,8 @@
 #define ISER0 ( *(uint32_t*) ( 0xE000E100 ) )
 
 
+#ifdef USE_SCT
+
 static uint32_t totalXSteps;
 static uint32_t totalYSteps;
 static uint32_t currentXSteps;
@@ -123,14 +125,6 @@ static void init() {
 }
 
 
-void stepper_reenablePins() {
-	PINASSIGN7 = ~0;  // disable SCT 0 output
-	PINASSIGN8 = ~0;  // disable SCT 1 output
-
-	initialized = false;
-}
-
-
 void stepper_move(unsigned int pps, unsigned int stepCountX, unsigned int stepCountY) {
 	if (!initialized) {
 		init();
@@ -157,6 +151,10 @@ void stepper_move(unsigned int pps, unsigned int stepCountX, unsigned int stepCo
 
 	while (!(LPC_SCT0->CTRL_L & (1 << 2)) || !(LPC_SCT1->CTRL_L & (1 << 2)));  // Blocking until movement is complete
 }
+#endif
 
 
-
+void stepper_reenable_pins() {
+	PINASSIGN7 = ~0;  // disable SCT 0 output
+	PINASSIGN8 = ~0;  // disable SCT 1 output
+}
