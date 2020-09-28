@@ -98,22 +98,29 @@ void setPenDown(uint8_t val) {
 
 // Platform calls
 void platform_init() {
-	setPenPosition(PEN_UP);
+	pwm_enable(0, 0, 12);
+	pwm_setFreq(0, 5000);
+
+	servo_enable(3, 0, 10);
+
 	setLaserPower(0);
+	setPenPosition(PEN_UP);
+
 	plotter_setDim(X_LENGTH, Y_LENGTH);
 	plotter_setDir(X_DIRECTION == Direction::clockwise,
 			Y_DIRECTION == Direction::clockwise);  // TODO: check hardware direction
+
 	plotter_calibrate();
 }
 
 
 void setPenPosition(uint8_t val) {
-
+	servo_move(3, val);
 }
 
 
 void setLaserPower(uint8_t power) {
-
+	pwm_setDuty(0, power);
 }
 
 
@@ -123,6 +130,8 @@ void moveExtruderTo(float x, float y) {
 
 
 void moveExtruderHome() {
+	setLaserPower(0);
+	setPenPosition(PEN_UP);
 	plotter_home();
 }
 

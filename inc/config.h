@@ -10,7 +10,7 @@
 
 
 #define CACHE_SIZE 10
-#define READ_TIMEOUT 100
+#define READ_TIMEOUT 1000
 #define DRY_RUN  // remove to enable laser and pen control
 #define USE_SCT
 
