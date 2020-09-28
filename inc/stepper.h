@@ -13,6 +13,8 @@
 #include "board.h"
 #include "chip.h"
 
+#include "config.h"
+
 
 #define SAFE_PPS 500
 
