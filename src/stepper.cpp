@@ -17,6 +17,8 @@
 #define ISER0 ( *(uint32_t*) ( 0xE000E100 ) )
 
 
+#ifdef USE_SCT
+
 static uint32_t totalXSteps;
 static uint32_t totalYSteps;
 static uint32_t currentXSteps;
@@ -24,6 +26,8 @@ static uint32_t currentYSteps;
 static uint32_t maxXPPS;
 static uint32_t maxYPPS;
 static uint32_t currentSafePPS {SAFE_PPS};
+
+static bool initialized {false};
 
 
 static uint32_t getPrescaler(uint32_t pps) {
@@ -107,7 +111,7 @@ static void timer_start(LPC_SCT_T* timer) {
 }
 
 
-void stepper_init() {
+static void init() {
 	SYSAHBCLKCTRL1 |= 1u << 4 | 1u << 5;  // enable clock to SCT 2 and 3
 	PRESETCTRL1 &= ~(1u << 4 | 1u << 5);  // clear SCT reset
 
@@ -117,26 +121,23 @@ void stepper_init() {
 
 	timer_init(LPC_SCT2);
 	timer_init(LPC_SCT3);
-}
 
-
-void stepper_reenable_pins() {
-	PINASSIGN8 |= 0xff << 24;  // disable SCT 2 output
-	PINASSIGN9 |= 0xff << 16;  // disable SCT 3 output
+	initialized = true;
 }
 
 
 void stepper_move(unsigned int pps, unsigned int stepCountX, unsigned int stepCountY) {
-	float mid = (stepCountX + stepCountY) / 2.0;
+	if (!initialized) {
+		init();
+	}
 
 	totalXSteps = stepCountX;
 	totalYSteps = stepCountY;
 	currentXSteps = currentYSteps = 0;
-	maxXPPS = pps * (stepCountX / mid);
-	maxYPPS = pps * (stepCountY / mid);
+	maxXPPS = maxYPPS = pps;
 
-	if (maxXPPS < SAFE_PPS || maxYPPS < SAFE_PPS) {
-		currentSafePPS = maxXPPS < maxYPPS? maxXPPS : maxYPPS;
+	if (pps < SAFE_PPS) {
+		currentSafePPS = pps;
 	} else {
 		currentSafePPS = SAFE_PPS;
 	}
@@ -151,6 +152,10 @@ void stepper_move(unsigned int pps, unsigned int stepCountX, unsigned int stepCo
 
 	while (!(LPC_SCT2->CTRL_L & (1 << 2)) || !(LPC_SCT3->CTRL_L & (1 << 2)));  // Blocking until movement is complete
 }
+#endif
 
 
-
+void stepper_reenablePins() {
+	PINASSIGN8 |= 0xff << 24;  // disable SCT 2 output
+	PINASSIGN9 |= 0xff << 16;  // disable SCT 3 output
+}

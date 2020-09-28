@@ -26,9 +26,7 @@ M11* M11::clone() const {
 
 
 void M11::execute() const {
-#ifndef DRY_RUN
 	// Nothing to do
-#endif
 }
 
 

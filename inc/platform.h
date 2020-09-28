@@ -8,11 +8,12 @@
 #ifndef PLATFORM_H_
 #define PLATFORM_H_
 
-#define DRY_RUN  // Remove to enable plotting
-
 
 #include <cstdint>
+
 #include "board.h"
+
+#include "plotter.h"
 
 
 enum Direction {
@@ -29,6 +30,7 @@ typedef struct {
 } LimitSwitches_t;
 
 
+// Settings
 // Getters
 LimitSwitches_t getLimitSwitches();
 unsigned int getXLength();
@@ -38,7 +40,6 @@ Direction getYDirection();
 uint8_t getPlottingSpeed();
 uint8_t getPenUp();
 uint8_t getPenDown();
-uint8_t getPenPosition();
 
 // Setters
 void setXLength(unsigned int len);
@@ -48,8 +49,13 @@ void setYDirection(Direction dir);
 void setPlottingSpeed(uint8_t spd);
 void setPenUp(uint8_t val);
 void setPenDown(uint8_t val);
+
+// Platform calls
+void platform_init();
 void setPenPosition(uint8_t val);
 void setLaserPower(uint8_t power);
+void moveExtruderTo(float x, float y);
+void moveExtruderHome();
 
 
 #endif /* PLATFORM_H_ */

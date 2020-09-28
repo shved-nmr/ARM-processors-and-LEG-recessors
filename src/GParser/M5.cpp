@@ -29,10 +29,6 @@ void M5::execute() const {
 	setXDirection((Direction)this->xDirection);
 	setYDirection((Direction)this->yDirection);
 	setPlottingSpeed(this->plottingSpeed);
-
-#ifndef DRY_RUN
-	// Nothing to do
-#endif
 }
 
 
