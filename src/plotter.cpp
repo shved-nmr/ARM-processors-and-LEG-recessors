@@ -103,7 +103,7 @@ void plotter_calibrate() {
 		++stepsX;
 		step(*stepX);
 	} while (!limitClosed());
-	limYHigh = getClosedLimit();
+	limXLow = getClosedLimit();
 
 	do {  // opening y limit
 		*dirX = directionX;
@@ -185,7 +185,6 @@ void plotter_home() {
 
 	do {  // moving x home
 		*dirX = !directionX;
-		++stepsX;
 		step(*stepX);
 	} while (!*limXLow);
 
@@ -196,7 +195,6 @@ void plotter_home() {
 
 	do {  // moving y home
 		*dirY = !directionY;
-		++stepsY;
 		step(*stepY);
 	} while (!*limYLow);
 
