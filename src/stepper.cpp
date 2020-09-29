@@ -11,8 +11,9 @@
 
 #define SYSAHBCLKCTRL1 ( *(uint32_t*) ( 0x400740C8 ) )
 #define PRESETCTRL1 ( *(uint32_t*) ( 0x40074048 ) )
-#define PINASSIGN7 ( *(uint32_t*) ( 0x4003801C ) )
+#define PINASSIGN7 ( *(uint32_t*) ( 0x4003801C ) )  // No longer used
 #define PINASSIGN8 ( *(uint32_t*) ( 0x40038020 ) )
+#define PINASSIGN9 ( *(uint32_t*) ( 0x40038024 ) )
 #define ISER0 ( *(uint32_t*) ( 0xE000E100 ) )
 
 
@@ -56,26 +57,26 @@ static int getPPS(uint32_t currentSteps, uint32_t totalSteps, uint32_t maxPPS) {
 
 
 extern "C" {
-void SCT0_IRQHandler() {  // x-axis
-	LPC_SCT0->EVFLAG &= ~(1 << 2);  // clear interrupt flag
-	LPC_SCT0->MATCHREL[0].U = getPrescaler(getPPS(currentXSteps, totalXSteps, maxXPPS));  // set new pps
+void SCT2_IRQHandler() {  // x-axis
+	LPC_SCT2->EVFLAG &= ~(1 << 2);  // clear interrupt flag
+	LPC_SCT2->MATCHREL[0].U = getPrescaler(getPPS(currentXSteps, totalXSteps, maxXPPS));  // set new pps
 
 	++currentXSteps;
 	if (currentXSteps >= totalXSteps) {
-		LPC_SCT0->CTRL_L |= 1 << 2;  // halt SCT0
+		LPC_SCT2->CTRL_L |= 1 << 2;  // halt SCT 2
 	}
 }
 }
 
 
 extern "C" {
-void SCT1_IRQHandler() {  // y-axis
-	LPC_SCT1->EVFLAG &= ~(1 << 2);  // clear interrupt flag
-	LPC_SCT1->MATCHREL[0].U = getPrescaler(getPPS(currentYSteps, totalYSteps, maxYPPS));  // set new pps
+void SCT3_IRQHandler() {  // y-axis
+	LPC_SCT3->EVFLAG &= ~(1 << 2);  // clear interrupt flag
+	LPC_SCT3->MATCHREL[0].U = getPrescaler(getPPS(currentYSteps, totalYSteps, maxYPPS));  // set new pps
 
 	++currentYSteps;
 	if (currentYSteps >= totalYSteps) {
-		LPC_SCT1->CTRL_L |= 1 << 2;  // halt SCT1
+		LPC_SCT3->CTRL_L |= 1 << 2;  // halt SCT 3
 	}
 }
 }
@@ -111,15 +112,15 @@ static void timer_start(LPC_SCT_T* timer) {
 
 
 static void init() {
-	SYSAHBCLKCTRL1 |= 1u << 2 | 1u << 3;  // enable clock to SCT 0 and 1
-	PRESETCTRL1 &= ~(1u << 2 | 1u << 3);  // clear SCT reset
+	SYSAHBCLKCTRL1 |= 1u << 4 | 1u << 5;  // enable clock to SCT 2 and 3
+	PRESETCTRL1 &= ~(1u << 4 | 1u << 5);  // clear SCT reset
 
-	PINASSIGN7 = (~(0xff << 8) | 24u << 8);  // enable SCT 0 output on pin 0_24
-	PINASSIGN8 = (~(0xff) | 27u);  // enable SCT 1 output on pin 0_27
-	ISER0 |= 1u << 16 | 1u << 17;  // enable interrupts in the NVIC
+	PINASSIGN8 &= (~(0xff << 24) | 24u << 24);  // enable SCT 2 output on pin 0_24
+	PINASSIGN9 &= (~(0xff << 16) | 27u << 16);  // enable SCT 3 output on pin 0_27
+	ISER0 |= 1u << 18 | 1u << 19;  // enable interrupts in the NVIC
 
-	timer_init(LPC_SCT0);
-	timer_init(LPC_SCT1);
+	timer_init(LPC_SCT2);
+	timer_init(LPC_SCT3);
 
 	initialized = true;
 }
@@ -142,19 +143,19 @@ void stepper_move(unsigned int pps, unsigned int stepCountX, unsigned int stepCo
 	}
 
 	if (stepCountX) {
-		timer_start(LPC_SCT0);
+		timer_start(LPC_SCT2);
 	}
 
 	if (stepCountY) {
-		timer_start(LPC_SCT1);
+		timer_start(LPC_SCT3);
 	}
 
-	while (!(LPC_SCT0->CTRL_L & (1 << 2)) || !(LPC_SCT1->CTRL_L & (1 << 2)));  // Blocking until movement is complete
+	while (!(LPC_SCT2->CTRL_L & (1 << 2)) || !(LPC_SCT3->CTRL_L & (1 << 2)));  // Blocking until movement is complete
 }
 #endif
 
 
-void stepper_reenable_pins() {
-	PINASSIGN7 = ~0;  // disable SCT 0 output
-	PINASSIGN8 = ~0;  // disable SCT 1 output
+void stepper_reenablePins() {
+	PINASSIGN8 |= 0xff << 24;  // disable SCT 2 output
+	PINASSIGN9 |= 0xff << 16;  // disable SCT 3 output
 }

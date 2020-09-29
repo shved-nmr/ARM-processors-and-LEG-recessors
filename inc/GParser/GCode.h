@@ -9,6 +9,7 @@
 #define GPARSER_GCODE_H_
 
 
+#include "config.h"
 #include "platform.h"
 
 

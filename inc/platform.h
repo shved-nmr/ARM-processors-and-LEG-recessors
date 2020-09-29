@@ -14,6 +14,8 @@
 #include "board.h"
 
 #include "plotter.h"
+#include "servo.h"
+#include "pwm.h"
 
 
 enum Direction {

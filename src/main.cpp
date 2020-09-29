@@ -7,11 +7,6 @@
 #endif
 
 
-#define CACHE_SIZE 10
-#define READ_TIMEOUT 100
-#define DRY_RUN  // remove to enable laser and pen control
-
-
 #include <cr_section_macros.h>
 #include <list>
 
@@ -21,6 +16,7 @@
 #include "ITM_write.h"
 #include "LpcUart.h"
 
+#include "config.h"  // Config should come before other libs
 #include "GParser/GLine.h"
 #include "platform.h"
 #include "log.h"
