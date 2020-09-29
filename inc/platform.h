@@ -24,14 +24,6 @@ enum Direction {
 };
 
 
-typedef struct {
-	bool limitXLow;
-	bool limitXHigh;
-	bool limitYLow;
-	bool limitYHigh;
-} LimitSwitches_t;
-
-
 // Settings
 // Getters
 LimitSwitches_t getLimitSwitches();
@@ -58,6 +50,7 @@ void setPenPosition(uint8_t val);
 void setLaserPower(uint8_t power);
 void moveExtruderTo(float x, float y);
 void moveExtruderHome();
+void calibrate();
 
 
 #endif /* PLATFORM_H_ */

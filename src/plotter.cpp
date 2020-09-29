@@ -83,6 +83,12 @@ static void step(DigitalIoPin& pin) {
 }
 
 
+LimitSwitches_t plotter_getLimits() {
+	return {*limYLow, *limYHigh,
+		*limXLow, *limXHigh};
+}
+
+
 bool plotter_checkLimit() {
 	return ((*dirX? *limXHigh : *limXLow)
 			|| (*dirY? *limYHigh : *limYLow));
@@ -94,8 +100,9 @@ void plotter_calibrate() {
 		init();
 	}
 	stepper_reenablePins();
+	stepsX = stepsY = 0;
 
-	while (limitClosed());
+	while (limitClosed());  // wait for all switches to be released
 
 	// Calibrating x-axis
 	do {  // finding high x limit

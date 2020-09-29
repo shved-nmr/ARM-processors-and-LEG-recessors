@@ -21,7 +21,7 @@ static uint8_t PEN_DOWN {90};
 
 // Getters
 LimitSwitches_t getLimitSwitches() {
-	return LimitSwitches_t {true, true, true, true};
+	return plotter_getLimits();
 }
 
 
@@ -63,21 +63,27 @@ uint8_t getPenDown() {
 // Setters
 void setXLength(unsigned int len) {
 	X_LENGTH = len;
+	plotter_setDim(X_LENGTH, Y_LENGTH);
 }
 
 
 void setYLength(unsigned int len) {
 	Y_LENGTH = len;
+	plotter_setDim(X_LENGTH, Y_LENGTH);
 }
 
 
 void setXDirection(Direction dir) {
 	X_DIRECTION = dir;
+	plotter_setDir(X_DIRECTION == Direction::clockwise,
+		Y_DIRECTION == Direction::clockwise);  // TODO: check hardware direction
 }
 
 
 void setYDirection(Direction dir) {
 	Y_DIRECTION = dir;
+	plotter_setDir(X_DIRECTION == Direction::clockwise,
+		Y_DIRECTION == Direction::clockwise);  // TODO: check hardware direction
 }
 
 
@@ -105,7 +111,7 @@ void platform_init() {
 
 	plotter_setDim(X_LENGTH, Y_LENGTH);
 	plotter_setDir(X_DIRECTION == Direction::clockwise,
-			Y_DIRECTION == Direction::clockwise);  // TODO: check hardware direction
+		Y_DIRECTION == Direction::clockwise);  // TODO: check hardware direction
 
 	plotter_calibrate();
 }
@@ -138,5 +144,10 @@ void moveExtruderHome() {
 	setLaserPower(0);
 	setPenPosition(PEN_UP);
 	plotter_home();
+}
+
+
+void calibrate() {
+	plotter_calibrate();
 }
 
