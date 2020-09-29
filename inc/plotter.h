@@ -23,5 +23,7 @@ void plotter_moveTo(float x, float y, uint32_t pps);
 void plotter_calibrate();
 void plotter_home();
 
+bool plotter_checkLimit();
+
 
 #endif /* PLOTTER_H_ */

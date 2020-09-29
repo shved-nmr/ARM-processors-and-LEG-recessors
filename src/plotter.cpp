@@ -83,6 +83,12 @@ static void step(DigitalIoPin& pin) {
 }
 
 
+bool plotter_checkLimit() {
+	return ((*dirX? *limXHigh : *limXLow)
+			|| (*dirY? *limYHigh : *limYLow));
+}
+
+
 void plotter_calibrate() {
 	if (!initialized) {
 		init();

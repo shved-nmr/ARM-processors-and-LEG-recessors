@@ -62,7 +62,7 @@ void SCT2_IRQHandler() {  // x-axis
 	LPC_SCT2->MATCHREL[0].U = getPrescaler(getPPS(currentXSteps, totalXSteps, maxXPPS));  // set new pps
 
 	++currentXSteps;
-	if (currentXSteps >= totalXSteps) {
+	if (currentXSteps >= totalXSteps || plotter_checkLimit()) {
 		LPC_SCT2->CTRL_L |= 1 << 2;  // halt SCT 2
 	}
 }
@@ -75,7 +75,7 @@ void SCT3_IRQHandler() {  // y-axis
 	LPC_SCT3->MATCHREL[0].U = getPrescaler(getPPS(currentYSteps, totalYSteps, maxYPPS));  // set new pps
 
 	++currentYSteps;
-	if (currentYSteps >= totalYSteps) {
+	if (currentYSteps >= totalYSteps || plotter_checkLimit()) {
 		LPC_SCT3->CTRL_L |= 1 << 2;  // halt SCT 3
 	}
 }

@@ -14,6 +14,7 @@
 #include "chip.h"
 
 #include "config.h"
+#include "plotter.h"
 
 
 #define SAFE_PPS 500
