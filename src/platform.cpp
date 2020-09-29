@@ -98,9 +98,6 @@ void setPenDown(uint8_t val) {
 
 // Platform calls
 void platform_init() {
-	pwm_enable(0, 0, 12);
-	pwm_setFreq(0, 5000);
-
 	servo_enable(3, 0, 10);
 
 	setLaserPower(0);
@@ -116,11 +113,19 @@ void platform_init() {
 
 void setPenPosition(uint8_t val) {
 	servo_move(3, val);
+	vTaskDelay(500);
 }
 
 
 void setLaserPower(uint8_t power) {
-	pwm_setDuty(0, power);
+	if (!power) {
+		pwm_disable(0);
+		DigitalIoPin {0, 12, DigitalIoPin::pinMode::output} = false;
+	} else {
+		pwm_enable(0, 0, 12);
+		pwm_setFreq(0, 1000);
+		pwm_setDuty(0, power);
+	}
 }
 
 

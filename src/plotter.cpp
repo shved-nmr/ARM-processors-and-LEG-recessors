@@ -24,21 +24,27 @@ static bool directionY {true};
 
 static bool initialized {false};
 
-static DigitalIoPin* limXLow;
-static DigitalIoPin* limXHigh;
-static DigitalIoPin* limYLow;
-static DigitalIoPin* limYHigh;
-static DigitalIoPin* dirX;
-static DigitalIoPin* stepX;
-static DigitalIoPin* dirY;
-static DigitalIoPin* stepY;
+static DigitalIoPin* lim1 {nullptr};
+static DigitalIoPin* lim2 {nullptr};
+static DigitalIoPin* lim3 {nullptr};
+static DigitalIoPin* lim4 {nullptr};
+
+DigitalIoPin* limXLow {nullptr};
+DigitalIoPin* limXHigh {nullptr};
+DigitalIoPin* limYLow {nullptr};
+DigitalIoPin* limYHigh {nullptr};
+
+static DigitalIoPin* dirX {nullptr};
+static DigitalIoPin* dirY {nullptr};
+static DigitalIoPin* stepX {nullptr};
+static DigitalIoPin* stepY {nullptr};
 
 
 static void init() {
-	limXLow = new DigitalIoPin {0, 29, DigitalIoPin::pinMode::pullup, true};
-	limXHigh = new DigitalIoPin {0, 9, DigitalIoPin::pinMode::pullup, true};
-	limYLow = new DigitalIoPin {1, 3, DigitalIoPin::pinMode::pullup, true};
-	limYHigh = new DigitalIoPin {0, 0, DigitalIoPin::pinMode::pullup, true};
+	lim1 = new DigitalIoPin {0, 29, DigitalIoPin::pinMode::pullup, true};
+	lim2 = new DigitalIoPin {0, 9, DigitalIoPin::pinMode::pullup, true};
+	lim3 = new DigitalIoPin {1, 3, DigitalIoPin::pinMode::pullup, true};
+	lim4 = new DigitalIoPin {0, 0, DigitalIoPin::pinMode::pullup, true};
 
 	dirX = new DigitalIoPin {1, 0, DigitalIoPin::pinMode::output};
 	stepX = new DigitalIoPin {0, 24, DigitalIoPin::pinMode::output};
@@ -49,49 +55,79 @@ static void init() {
 }
 
 
+static bool limitClosed() {
+	return *lim1 || *lim2 || *lim3 || *lim4;
+}
+
+
+static DigitalIoPin* getClosedLimit() {
+	if (*lim1) {
+		return lim1;
+	} else if (*lim2) {
+		return lim2;
+	} else if (*lim3) {
+		return lim3;
+	} else if (*lim4) {
+		return lim4;
+	} else {
+		return nullptr;
+	}
+}
+
+
+static void step(DigitalIoPin& pin) {
+	pin = true;
+	vTaskDelay(1);
+	pin = false;
+	vTaskDelay(1);
+}
+
+
 void plotter_calibrate() {
 	if (!initialized) {
 		init();
 	}
 	stepper_reenablePins();
 
-	while (*limXHigh || *limXLow || *limYLow || *limYHigh);
+	while (limitClosed());
 
 	// Calibrating x-axis
-	do {
+	do {  // finding high x limit
 		*dirX = directionX;
-		*stepX = true;
-		vTaskDelay(1);
-		*stepX = false;
-		vTaskDelay(1);
-	} while (!*limXLow && !*limXHigh);
+		step(*stepX);
+	} while (!limitClosed());
+	limXHigh = getClosedLimit();
 
-	do {
+	do {  // finding low x limit
 		*dirX = !directionX;
 		++stepsX;
-		*stepX = true;
-		vTaskDelay(1);
-		*stepX = false;
-		vTaskDelay(1);
-	} while (!*limXLow && !*limXHigh);
+		step(*stepX);
+	} while (!limitClosed());
+	limYHigh = getClosedLimit();
+
+	do {  // opening y limit
+		*dirX = directionX;
+		step(*stepX);
+	} while (limitClosed());
 
 	// Calibrating y-axis
-	do {
+	do {  // finding high y limit
 		*dirY = directionY;
-		*stepY = true;
-		vTaskDelay(1);
-		*stepY = false;
-		vTaskDelay(1);
-	} while (!*limYLow && !*limYHigh);
+		step(*stepY);
+	} while (!limitClosed());
+	limYHigh = getClosedLimit();
 
-	do {
+	do {  // finding low y limit
 		*dirY = !directionY;
 		++stepsY;
-		*stepY = true;
-		vTaskDelay(1);
-		*stepY = false;
-		vTaskDelay(1);
-	} while (!*limYLow && !*limYHigh);
+		step(*stepY);
+	} while (!limitClosed());
+	limYLow = getClosedLimit();
+
+	do {  // opening x limit
+		*dirY = directionY;
+		step(*stepY);
+	} while (limitClosed());
 }
 
 
@@ -147,23 +183,27 @@ void plotter_home() {
 	}
 	stepper_reenablePins();
 
-	do {
+	do {  // moving x home
 		*dirX = !directionX;
 		++stepsX;
-		*stepX = true;
-		vTaskDelay(1);
-		*stepX = false;
-		vTaskDelay(1);
-	} while (!*limXLow && !*limXHigh);
+		step(*stepX);
+	} while (!*limXLow);
 
-	do {
+	do {  // opening x limit
+		*dirX = directionX;
+		step(*stepX);
+	} while (*limXLow);
+
+	do {  // moving y home
 		*dirY = !directionY;
 		++stepsY;
-		*stepY = true;
-		vTaskDelay(1);
-		*stepY = false;
-		vTaskDelay(1);
-	} while (!*limYLow && !*limYHigh);
+		step(*stepY);
+	} while (!*limYLow);
+
+	do {  // opening y limit
+		*dirY = directionY;
+		step(*stepY);
+	} while (*limYLow);
 
 	currentStepsX = currentStepsY = 0;
 }
