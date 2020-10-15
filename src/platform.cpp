@@ -21,7 +21,7 @@ static uint8_t PEN_DOWN {90};
 
 // Getters
 LimitSwitches_t getLimitSwitches() {
-	return LimitSwitches_t {true, true, true, true};
+	return plotter_getLimits();
 }
 
 
@@ -63,21 +63,27 @@ uint8_t getPenDown() {
 // Setters
 void setXLength(unsigned int len) {
 	X_LENGTH = len;
+	plotter_setDim(X_LENGTH, Y_LENGTH);
 }
 
 
 void setYLength(unsigned int len) {
 	Y_LENGTH = len;
+	plotter_setDim(X_LENGTH, Y_LENGTH);
 }
 
 
 void setXDirection(Direction dir) {
 	X_DIRECTION = dir;
+	plotter_setDir(X_DIRECTION == Direction::clockwise,
+		Y_DIRECTION == Direction::clockwise);  // TODO: check hardware direction
 }
 
 
 void setYDirection(Direction dir) {
 	Y_DIRECTION = dir;
+	plotter_setDir(X_DIRECTION == Direction::clockwise,
+		Y_DIRECTION == Direction::clockwise);  // TODO: check hardware direction
 }
 
 
@@ -98,9 +104,6 @@ void setPenDown(uint8_t val) {
 
 // Platform calls
 void platform_init() {
-	pwm_enable(0, 0, 12);
-	pwm_setFreq(0, 5000);
-
 	servo_enable(3, 0, 10);
 
 	setLaserPower(0);
@@ -108,7 +111,7 @@ void platform_init() {
 
 	plotter_setDim(X_LENGTH, Y_LENGTH);
 	plotter_setDir(X_DIRECTION == Direction::clockwise,
-			Y_DIRECTION == Direction::clockwise);  // TODO: check hardware direction
+		Y_DIRECTION == Direction::clockwise);  // TODO: check hardware direction
 
 	plotter_calibrate();
 }
@@ -116,11 +119,19 @@ void platform_init() {
 
 void setPenPosition(uint8_t val) {
 	servo_move(3, val);
+	vTaskDelay(500);
 }
 
 
 void setLaserPower(uint8_t power) {
-	pwm_setDuty(0, power);
+	if (!power) {
+		pwm_disable(0);
+		DigitalIoPin {0, 12, DigitalIoPin::pinMode::output} = false;
+	} else {
+		pwm_enable(0, 0, 12);
+		pwm_setFreq(0, 1000);
+		pwm_setDuty(0, power);
+	}
 }
 
 
@@ -133,5 +144,10 @@ void moveExtruderHome() {
 	setLaserPower(0);
 	setPenPosition(PEN_UP);
 	plotter_home();
+}
+
+
+void calibrate() {
+	plotter_calibrate();
 }
 
