@@ -159,5 +159,4 @@ void stepper_reenablePins() {
 	PINASSIGN8 |= 0xff << 24;  // disable SCT 2 output
 	PINASSIGN9 |= 0xff << 16;  // disable SCT 3 output
 
-	initialized = false;
 }

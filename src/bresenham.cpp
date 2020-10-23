@@ -19,8 +19,8 @@ void stepper_init() {
 
 
 void stepper_move(unsigned int pps, unsigned int x2, unsigned int y2) {
-	DigitalIoPin stepX(0, 27, DigitalIoPin::pinMode::output);
-	DigitalIoPin stepY(0, 24, DigitalIoPin::pinMode::output);
+	DigitalIoPin stepX(0, 24, DigitalIoPin::pinMode::output);
+	DigitalIoPin stepY(0, 27, DigitalIoPin::pinMode::output);
     bool isSteep = true;
     unsigned int x1 = 0;
     unsigned int y1 = 0;
@@ -35,7 +35,7 @@ void stepper_move(unsigned int pps, unsigned int x2, unsigned int y2) {
         int m_slope = 2 * (y2 - y1);
         int slope_error = m_slope - (x2 - x1);
 
-        for (unsigned int x = x1, y = y1; x <= x2; x++) {
+        for (unsigned int x = x1, y = y1; x < x2; x++) {
             slope_error += m_slope;
 
             if (slope_error >= 0) {
@@ -49,7 +49,7 @@ void stepper_move(unsigned int pps, unsigned int x2, unsigned int y2) {
         int m_slope = 2 * (x2-x1);
         int slope_error = m_slope - (y2-y1);
 
-        for (unsigned int y = y1, x = x1; y <= y2; y++) {
+        for (unsigned int y = y1, x = x1; y < y2; y++) {
             slope_error += m_slope;
 
             if (slope_error >= 0) {
